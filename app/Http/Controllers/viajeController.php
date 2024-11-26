@@ -32,7 +32,7 @@ class viajeController extends Controller
     public function create()
     {
         // Obtener los choferes y vehículos disponibles para asignar
-        $choferes = User::where('role', 'chofer')->get(); // Asegúrate de que los choferes tienen un rol definido
+        $choferes = User::role('chofer')->get(); // Asegúrate de que los choferes tienen un rol definido
         $vehiculos = Vehiculo::all();
         return view('viaje.create', compact('choferes', 'vehiculos'));
     }
@@ -44,8 +44,8 @@ class viajeController extends Controller
     {
         // Validar los datos del formulario
         $validated = $request->validate([
-            'fecha' => 'required|date',
-            'hora' => 'required|time',
+            'fecha' => 'required',
+            'hora' => 'required',
             'id_chofer' => 'nullable|exists:users,id',
             'id_vehiculo' => 'nullable|exists:vehiculos,id',
             'estado' => 'nullable|string|max:15',
@@ -63,7 +63,7 @@ class viajeController extends Controller
     public function edit(Viaje $viaje)
     {
         // Obtener choferes y vehículos disponibles
-        $choferes = User::where('role', 'chofer')->get(); // Asegúrate de que los choferes tienen un rol definido
+        $choferes = User::role('chofer')->get(); // Asegúrate de que los choferes tienen un rol definido
         $vehiculos = Vehiculo::all();
         return view('viaje.edit', compact('viaje', 'choferes', 'vehiculos'));
     }
@@ -75,8 +75,8 @@ class viajeController extends Controller
     {
         // Validar los datos del formulario
         $validated = $request->validate([
-            'fecha' => 'required|date',
-            'hora' => 'required|time',
+            'fecha' => 'required',
+            'hora' => 'required',
             'id_chofer' => 'nullable|exists:users,id',
             'id_vehiculo' => 'nullable|exists:vehiculos,id',
             'estado' => 'nullable|string|max:15',
