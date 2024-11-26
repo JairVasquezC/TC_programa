@@ -128,6 +128,14 @@
                 </a>
                 @endcan
 
+                @can('ver-cliente')
+                <a class="nav-link text-white" href="{{ route('vehiculos.index') }}">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-car"></i></div>
+                    Vehículos
+                </a>
+                @endcan
+
+
                 {{-- @can('ver-proveedore')
                 <a class="nav-link text-white" href="{{ route('proveedores.index') }}">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-user-group"></i></div>
