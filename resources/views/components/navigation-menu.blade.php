@@ -55,7 +55,7 @@
 
                 <div class="sb-sidenav-menu-heading text-white">Modulos</div>
 
-                <!----Compras---->
+                {{-- <!----Compras---->
                 @can('ver-compra')
                 <a class="nav-link collapsed text-white" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCompras" aria-expanded="false" aria-controls="collapseLayouts">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-store"></i></div>
@@ -72,7 +72,7 @@
                         @endcan
                     </nav>
                 </div>
-                @endcan
+                @endcan --}}
 
                 <!----Ventas---->
                 @can('ver-venta')
@@ -128,12 +128,12 @@
                 </a>
                 @endcan
 
-                @can('ver-proveedore')
+                {{-- @can('ver-proveedore')
                 <a class="nav-link text-white" href="{{ route('proveedores.index') }}">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-user-group"></i></div>
                     Proveedores
                 </a>
-                @endcan
+                @endcan --}}
 
                 @hasrole('administrador')
                 <div class="sb-sidenav-menu-heading">OTROS</div>
