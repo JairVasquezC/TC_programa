@@ -9,7 +9,7 @@ class loginController extends Controller
 {
     public function index(){
         if(Auth::check()){
-            return redirect()->route('panel');
+            return view('panel.index');
         }
         return view('auth.login');
     }
@@ -24,6 +24,7 @@ class loginController extends Controller
         //Crear una sesión
         $user = Auth::getProvider()->retrieveByCredentials($request->only('email','password')); 
         Auth::login($user);
+        
 
         return redirect()->route('panel')->with('success', 'Bienvenido '.$user->name);
 

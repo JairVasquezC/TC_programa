@@ -15,7 +15,7 @@ use App\Http\Controllers\roleController;
 use App\Http\Controllers\userController;
 use App\Http\Controllers\ventaController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\SeguimientoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,8 +26,28 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/',[homeController::class,'index'])->name('panel');
 
+Route::get('/', function () {
+    return view('secciones.hero');
+});
+Route::get('/cotización', function () {
+    return view('secciones.cotizacion');
+});
+
+Route::get('/contactenos', function () {
+    return view('secciones.contactenos');
+});
+
+Route::get('/nosotros', function () {
+    return view('secciones.nosotros');
+});
+
+Route::get('/seguimientos', [SeguimientoController::class, 'index'])->name('seguimientos');
+
+
+
+Route::get('/panel', [homeController::class, 'index'])->name('panel')->middleware('auth');
+// Route::get('/', [homeController::class, 'plantilla'])->name('plantilla');
 Route::resources([
     'categorias' => categoriaController::class,
     'presentaciones' => presentacioneController::class,

@@ -6,11 +6,15 @@ use Illuminate\Support\Facades\Auth;
 
 class homeController extends Controller
 {
-    public function index(){
-        if(!Auth::check()){
-            return view('welcome');
-        }
-        return view('panel.index');
+    // Cargar la plantilla inicial
+    public function plantilla()
+    {
+        return view('landing.plantilla');
     }
 
+    // Cargar el panel
+    public function index()
+    {
+        return view('panel.index');
+    }
 }
