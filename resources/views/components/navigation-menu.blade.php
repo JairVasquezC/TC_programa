@@ -75,7 +75,7 @@
                 @endcan --}}
 
                 <!----Ventas---->
-                @can('ver-venta')
+                {{-- @can('ver-venta')
                 <a class="nav-link collapsed text-white" href="#" data-bs-toggle="collapse" data-bs-target="#collapseVentas" aria-expanded="false" aria-controls="collapseLayouts">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                     Ventas
@@ -119,7 +119,7 @@
                     <div class="sb-nav-link-icon"><i class="fa-brands fa-shopify"></i></div>
                     Productos
                 </a>
-                @endcan
+                @endcan --}}
 
                 @can('ver-cliente')
                 <a class="nav-link text-white" href="{{ route('clientes.index') }}">
@@ -142,6 +142,12 @@
                 </a>
                 @endcan
 
+                @can('ver-venta_pasaje')
+                <a class="nav-link text-white" href="{{ route('ventas_pasajes.index') }}">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-ticket"></i></div>
+                    Venta de Pasajes
+                </a>
+                @endcan
 
                 {{-- @can('ver-proveedore')
                 <a class="nav-link text-white" href="{{ route('proveedores.index') }}">

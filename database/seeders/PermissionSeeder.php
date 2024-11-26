@@ -89,6 +89,13 @@ class PermissionSeeder extends Seeder
             'crear-viaje',
             'editar-viaje',
             'eliminar-viaje',
+            
+
+            //venta_pasaje
+            'ver-venta_pasaje',
+            'crear-venta_pasaje',
+            'editar-venta_pasaje',
+            'eliminar-venta_pasaje',
         ];
 
         foreach ($permisos as $permiso) {
