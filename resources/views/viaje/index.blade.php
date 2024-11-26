@@ -1,37 +1,85 @@
 @extends('layouts.app')
 
+@section('title', 'Viajes')
+
+@push('css-datatable')
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+@endpush
+
+@push('css')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@endpush
+
 @section('content')
-    <h1>Listado de Viajes</h1>
-    <a href="{{ route('viajes.create') }}">Crear Viaje</a>
-    <table>
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Chofer</th>
-                <th>Vehículo</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($viajes as $viaje)
-                <tr>
-                    <td>{{ $viaje->fecha }}</td>
-                    <td>{{ $viaje->hora }}</td>
-                    <td>{{ $viaje->chofer->name ?? 'Sin chofer' }}</td>
-                    <td>{{ $viaje->vehiculo->placa ?? 'Sin vehículo' }}</td>
-                    <td>{{ $viaje->estado ?? 'No definido' }}</td>
-                    <td>
-                        <a href="{{ route('viajes.edit', $viaje) }}">Editar</a>
-                        <form action="{{ route('viajes.destroy', $viaje) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+
+@include('layouts.partials.alert')
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4 text-black text-center">Viajes</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ route('panel') }}">Inicio</a></li>
+        <li class="breadcrumb-item active">Viajes</li>
+    </ol>
+
+    @can('crear-viaje')
+    <div class="mb-4">
+        <a href="{{ route('viajes.create') }}">
+            <button type="button" class="btn btn-primary">Añadir nuevo viaje</button>
+        </a>
+    </div>
+    @endcan
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Tabla Viajes
+        </div>
+        <div class="card-body">
+            <table id="datatablesSimple" class="table table-striped fs-6">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Chofer</th>
+                        <th>Vehículo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($viajes as $viaje)
+                    <tr>
+                        <td>{{ $viaje->fecha }}</td>
+                        <td>{{ $viaje->hora }}</td>
+                        <td>{{ $viaje->chofer->name ?? 'Sin chofer' }}</td>
+                        <td>{{ $viaje->vehiculo->placa ?? 'Sin vehículo' }}</td>
+                        <td>{{ $viaje->estado ?? 'No definido' }}</td>
+                        <td>
+                            <div class="d-flex justify-content-around">
+                                @can('editar-viaje')
+                                <a href="{{ route('viajes.edit', $viaje) }}" class="btn btn-primary btn-sm">Editar</a>
+                                @endcan
+
+                                @can('eliminar-viaje')
+                                <form action="{{ route('viajes.destroy', $viaje) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este viaje?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                                @endcan
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('js')
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+<script src="{{ asset('js/datatables-simple-demo.js') }}"></script>
+@endpush
+
