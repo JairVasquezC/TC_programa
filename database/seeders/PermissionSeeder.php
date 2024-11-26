@@ -13,7 +13,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permisos = [
-    
+
             //categorías
             'ver-categoria',
             'crear-categoria',
@@ -74,13 +74,28 @@ class PermissionSeeder extends Seeder
             'editar-user',
             'eliminar-user',
 
-            //Perfil 
+            //Perfil
             'ver-perfil',
-            'editar-perfil'
+            'editar-perfil',
+
+            //Vehiculo
+            'ver-vehiculo',
+            'crear-vehiculo',
+            'editar-vehiculo',
+            'eliminar-vehiculo',
+
+            //Viaje
+            'ver-viaje',
+            'crear-viaje',
+            'editar-viaje',
+            'eliminar-viaje',
         ];
 
-        foreach($permisos as $permiso){
-            Permission::create(['name' => $permiso]);
+        foreach ($permisos as $permiso) {
+            Permission::firstOrCreate([
+                'name' => $permiso,
+                'guard_name' => 'web', // Especifica el guard si tienes más de uno
+            ]);
         }
     }
 }

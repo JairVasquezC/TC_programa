@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 
 class viajeController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:ver-viaje|crear-viaje|editar-viaje|eliminar-viaje', ['only' => ['index']]);
+        $this->middleware('permission:crear-viaje', ['only' => ['create', 'store']]);
+        $this->middleware('permission:editar-viaje', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:eliminar-viaje', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */

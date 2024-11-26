@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class vehiculoController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:ver-vehiculo|crear-vehiculo|editar-vehiculo|eliminar-vehiculo', ['only' => ['index']]);
+        $this->middleware('permission:crear-vehiculo', ['only' => ['create', 'store']]);
+        $this->middleware('permission:editar-vehiculo', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:eliminar-vehiculo', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */

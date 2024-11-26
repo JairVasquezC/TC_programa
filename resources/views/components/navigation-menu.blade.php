@@ -128,14 +128,14 @@
                 </a>
                 @endcan
 
-                @can('ver-cliente')
+                @can('ver-vehiculo')
                 <a class="nav-link text-white" href="{{ route('vehiculos.index') }}">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-car"></i></div>
                     Vehículos
                 </a>
                 @endcan
 
-                @can('ver-cliente')
+                @can('ver-viaje')
                 <a class="nav-link text-white" href="{{ route('viajes.index') }}">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-road"></i></div>
                     Viajes
