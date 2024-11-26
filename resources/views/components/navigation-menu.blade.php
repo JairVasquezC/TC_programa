@@ -135,6 +135,13 @@
                 </a>
                 @endcan
 
+                @can('ver-cliente')
+                <a class="nav-link text-white" href="{{ route('viajes.index') }}">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-road"></i></div>
+                    Viajes
+                </a>
+                @endcan
+
 
                 {{-- @can('ver-proveedore')
                 <a class="nav-link text-white" href="{{ route('proveedores.index') }}">

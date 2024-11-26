@@ -17,6 +17,7 @@ use App\Http\Controllers\ventaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\vehiculoController;
+use App\Http\Controllers\viajeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,7 +63,8 @@ Route::resources([
     'users' => userController::class,
     'roles' => roleController::class,
     'profile' => profileController::class,
-    'vehiculos'=>vehiculoController::class
+    'vehiculos'=>vehiculoController::class,
+    'viajes'=> viajeController::class
 ]);
 
 Route::get('/login',[loginController::class,'index'])->name('login');
