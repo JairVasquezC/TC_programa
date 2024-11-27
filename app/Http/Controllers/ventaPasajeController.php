@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\VentaPasaje;
 use App\Models\Cliente;
 use App\Models\Viaje;
+use App\Models\Documento;
 use Illuminate\Http\Request;
 
 class ventaPasajeController extends Controller
@@ -34,7 +35,8 @@ class ventaPasajeController extends Controller
         // Obtener los viajes y clientes disponibles para crear una venta de pasaje
         $viajes = Viaje::all();
         $clientes = Cliente::all();
-        return view('ventas_pasajes.create', compact('viajes', 'clientes'));
+        $documentos = Documento::all();
+        return view('ventas_pasajes.create', compact('viajes', 'clientes','documentos'));
     }
 
     /**

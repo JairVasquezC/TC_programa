@@ -14,7 +14,7 @@ return new class extends Migration
             $table->time('hora');
             $table->foreignId('id_chofer')->nullable()->constrained('users')->onDelete('set null');  // Añadir nullable()
             $table->foreignId('id_vehiculo')->nullable()->constrained('vehiculos')->onDelete('set null');  // Añadir nullable()
-            $table->string('estado', 15)->nullable();
+            $table->string('estado', 30)->nullable();
             $table->timestamps();
         });
     }

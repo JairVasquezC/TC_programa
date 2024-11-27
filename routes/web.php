@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\categoriaController;
+//use App\Http\Controllers\categoriaController;
 use App\Http\Controllers\clienteController;
 use App\Http\Controllers\compraController;
 use App\Http\Controllers\homeController;
@@ -53,7 +53,7 @@ Route::get('/seguimientos', [SeguimientoController::class, 'index'])->name('segu
 Route::get('/panel', [homeController::class, 'index'])->name('panel')->middleware('auth');
 // Route::get('/', [homeController::class, 'plantilla'])->name('plantilla');
 Route::resources([
-    'categorias' => categoriaController::class,
+    //'categorias' => categoriaController::class,
     'presentaciones' => presentacioneController::class,
     'marcas' => marcaController::class,
     'productos' => ProductoController::class,
@@ -68,6 +68,8 @@ Route::resources([
     'viajes'=> viajeController::class,
     'ventas_pasajes'=> ventaPasajeController::class
 ]);
+Route::get('/clientes/{id}', [ClienteController::class, 'getClientData']);
+
 
 Route::get('/login',[loginController::class,'index'])->name('login');
 Route::post('/login',[loginController::class,'login']);

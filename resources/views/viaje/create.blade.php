@@ -42,42 +42,42 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label for="chofer_id" class="form-label">Chofer:</label>
-                        <select name="chofer_id" id="chofer_id" class="form-control">
+                        <label for="id_chofer" class="form-label">Chofer:</label>
+                        <select name="id_chofer" id="id_chofer" class="form-control">
                             <option value="">Seleccionar chofer</option>
                             @foreach($choferes as $chofer)
-                                <option value="{{ $chofer->id }}" {{ old('chofer_id') == $chofer->id ? 'selected' : '' }}>
+                                <option value="{{ $chofer->id }}" {{ old('id_chofer') == $chofer->id ? 'selected' : '' }}>
                                     {{ $chofer->name }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('chofer_id')
+                        @error('id_chofer')
                         <small class="text-danger">{{ '*' . $message }}</small>
                         @enderror
                     </div>
 
                     <div class="col-md-6">
-                        <label for="vehiculo_id" class="form-label">Vehículo:</label>
-                        <select name="vehiculo_id" id="vehiculo_id" class="form-control">
+                        <label for="id_vehiculo" class="form-label">Vehículo:</label>
+                        <select name="id_vehiculo" id="id_vehiculo" class="form-control">
                             <option value="">Seleccionar vehículo</option>
                             @foreach($vehiculos as $vehiculo)
-                                <option value="{{ $vehiculo->id }}" {{ old('vehiculo_id') == $vehiculo->id ? 'selected' : '' }}>
+                                <option value="{{ $vehiculo->id }}" {{ old('id_vehiculo') == $vehiculo->id ? 'selected' : '' }}>
                                     {{ $vehiculo->placa }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('vehiculo_id')
+                        @error('id_vehiculo')
                         <small class="text-danger">{{ '*' . $message }}</small>
                         @enderror
                     </div>
 
-                    <div class="col-md-6">
+                    {{-- <div class="col-md-6">
                         <label for="estado" class="form-label">Estado:</label>
                         <input type="text" name="estado" id="estado" class="form-control" value="{{ old('estado') }}">
                         @error('estado')
                         <small class="text-danger">{{ '*' . $message }}</small>
                         @enderror
-                    </div>
+                    </div> --}}
                 </div>
 
             </div>

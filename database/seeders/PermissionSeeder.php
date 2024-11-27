@@ -14,11 +14,11 @@ class PermissionSeeder extends Seeder
     {
         $permisos = [
 
-            //categorías
-            'ver-categoria',
-            'crear-categoria',
-            'editar-categoria',
-            'eliminar-categoria',
+            // //categorías
+            // 'ver-categoria',
+            // 'crear-categoria',
+            // 'editar-categoria',
+            // 'eliminar-categoria',
 
             //Cliente
             'ver-cliente',
@@ -26,41 +26,41 @@ class PermissionSeeder extends Seeder
             'editar-cliente',
             'eliminar-cliente',
 
-            //Compra
-            'ver-compra',
-            'crear-compra',
-            'mostrar-compra',
-            'eliminar-compra',
+            // //Compra
+            // 'ver-compra',
+            // 'crear-compra',
+            // 'mostrar-compra',
+            // 'eliminar-compra',
 
-            //Marca
-            'ver-marca',
-            'crear-marca',
-            'editar-marca',
-            'eliminar-marca',
+            // //Marca
+            // 'ver-marca',
+            // 'crear-marca',
+            // 'editar-marca',
+            // 'eliminar-marca',
 
-            //Presentacione
-            'ver-presentacione',
-            'crear-presentacione',
-            'editar-presentacione',
-            'eliminar-presentacione',
+            // //Presentacione
+            // 'ver-presentacione',
+            // 'crear-presentacione',
+            // 'editar-presentacione',
+            // 'eliminar-presentacione',
 
-            //Producto
-            'ver-producto',
-            'crear-producto',
-            'editar-producto',
-            'eliminar-producto',
+            // //Producto
+            // 'ver-producto',
+            // 'crear-producto',
+            // 'editar-producto',
+            // 'eliminar-producto',
 
-            //Proveedore
-            'ver-proveedore',
-            'crear-proveedore',
-            'editar-proveedore',
-            'eliminar-proveedore',
+            // //Proveedore
+            // 'ver-proveedore',
+            // 'crear-proveedore',
+            // 'editar-proveedore',
+            // 'eliminar-proveedore',
 
-            //Venta
-            'ver-venta',
-            'crear-venta',
-            'mostrar-venta',
-            'eliminar-venta',
+            // //Venta
+            // 'ver-venta',
+            // 'crear-venta',
+            // 'mostrar-venta',
+            // 'eliminar-venta',
 
             //Roles
             'ver-role',

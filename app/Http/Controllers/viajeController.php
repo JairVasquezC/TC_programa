@@ -31,9 +31,24 @@ class viajeController extends Controller
      */
     public function create()
     {
-        // Obtener los choferes y vehículos disponibles para asignar
-        $choferes = User::role('chofer')->get(); // Asegúrate de que los choferes tienen un rol definido
+        // Verificar si el rol 'chofer' existe
+        if (!User::role('chofer')->exists()) {
+            return redirect()->route('viajes.index')->with('error', 'El rol chofer no existe. Por favor, crea el rol antes de continuar.');
+        }
+        // Obtener los choferes con el rol 'chofer'
+        $choferes = User::role('chofer')->get();
+
+        if ($choferes->isEmpty()) {
+            return redirect()->route('viajes.index')->with('error', 'No hay choferes disponibles para asignar.');
+        }
+
+         // Obtener los vehículos
         $vehiculos = Vehiculo::all();
+
+        if ($vehiculos->isEmpty()) {
+            return redirect()->route('viajes.index')->with('error', 'No hay vehículos disponibles para asignar.');
+        }
+
         return view('viaje.create', compact('choferes', 'vehiculos'));
     }
 
@@ -48,15 +63,16 @@ class viajeController extends Controller
             'hora' => 'required',
             'id_chofer' => 'nullable|exists:users,id',
             'id_vehiculo' => 'nullable|exists:vehiculos,id',
-            'estado' => 'nullable|string|max:15',
         ]);
-
+    
+        // Asignar automáticamente el estado "Viaje Registrado"
+        $validated['estado'] = 'Viaje Registrado';
+    
         // Crear el viaje
         Viaje::create($validated);
-
+    
         return redirect()->route('viajes.index')->with('success', 'Viaje creado exitosamente');
     }
-
     /**
      * Show the form for editing the specified resource.
      */
