@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('encomiendas', function (Blueprint $table) {
             $table->id();
             $table->decimal('costo_total', 10, 2)->default(0);
-            $table->string('estado_envio', 15)->nullable();
+            $table->string('estado_envio', 30)->nullable();
             $table->timestamp('fecha_registro')->useCurrent();
             $table->foreignId('id_remitente')->constrained('clientes')->onDelete('cascade');
             $table->foreignId('id_destinatario')->constrained('clientes')->onDelete('cascade');

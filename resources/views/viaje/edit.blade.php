@@ -80,9 +80,6 @@
                             <option value="Viaje en camino" {{ old('estado', $viaje->estado) == 'Viaje en camino' ? 'selected' : '' }}>Viaje en camino</option>
                             <option value="Viaje Finalizado" {{ old('estado', $viaje->estado) == 'Viaje Finalizado' ? 'selected' : '' }}>Viaje Finalizado</option>
                         </select>
-                        @error('estado')
-                        <small class="text-danger">{{ '*' . $message }}</small>
-                        @enderror
                     </div>
                 </div>
 

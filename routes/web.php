@@ -91,8 +91,8 @@ Route::get('/500', function () {
     return view('pages.500');
 });
 Route::get('/buscar-cliente', [ventaPasajeController::class, 'buscarClientePorDni'])->name('buscar-cliente');
-Route::post('/crear-cliente', [clienteController::class, 'store1'])->name('clientes.store1');
-
+Route::post('/crear-cliente1', [clienteController::class, 'store1'])->name('clientes.store1');
+Route::post('/crear-cliente2', [clienteController::class, 'store2'])->name('clientes.store2');
 
 Route::resource('encomiendas', encomiendaController::class);
 

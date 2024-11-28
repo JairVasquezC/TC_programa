@@ -204,7 +204,7 @@
                 <h5 class="modal-title" id="clienteModalLabel">Crear Cliente</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="crearClienteForm" method="POST" action="{{ route('clientes.store1') }}">
+            <form id="crearClienteForm" method="POST" action="{{ route('clientes.store2') }}">
                 @csrf
                 <div class="modal-body">
                     <div class="card-body text-bg-light">

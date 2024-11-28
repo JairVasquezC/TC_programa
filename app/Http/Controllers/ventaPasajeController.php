@@ -100,7 +100,7 @@ class ventaPasajeController extends Controller
             'id_cliente' => 'required|exists:clientes,id',
             'costo' => 'required|numeric',
             'fecha_venta' => 'nullable|date',
-            'estado' => 'nullable|string|max:15',
+            'estado' => 'nullable|string',
             'id_empresa' => 'nullable|exists:clientes,id',
         ]);
 

@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('id_venta_pasaje')->constrained('ventas_pasajes')->onDelete('cascade');
             $table->decimal('monto', 10, 2);
             $table->string('metodo_pago', 50);
-            $table->string('estado', 15)->nullable();
+            $table->string('estado', 30)->nullable();
             $table->timestamp('fecha_pago')->useCurrent();
             $table->timestamps();
         });

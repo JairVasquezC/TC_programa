@@ -134,7 +134,7 @@ class encomiendaController extends Controller
 
         $validatedData = $request->validate([
             'costo_total' => 'required|numeric',
-            'estado_envio' => 'nullable|string|max:15',
+            'estado_envio' => 'nullable|string',
             'id_remitente' => 'required|exists:clientes,id',
             'id_destinatario' => 'required|exists:clientes,id',
             'id_viaje' => 'nullable|exists:viajes,id',

@@ -95,7 +95,7 @@ class viajeController extends Controller
             'hora' => 'required',
             'id_chofer' => 'nullable|exists:users,id',
             'id_vehiculo' => 'nullable|exists:vehiculos,id',
-            'estado' => 'nullable|string|max:15',
+            'estado' => 'nullable|string',
         ]);
 
         // Actualizar el viaje

@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('id_cliente')->constrained('clientes')->onDelete('cascade');
             $table->decimal('costo', 10, 2);
             $table->timestamp('fecha_venta')->useCurrent();
-            $table->string('estado', 15)->nullable();
+            $table->string('estado', 30)->nullable();
             $table->foreignId('id_empresa')->nullable()->constrained('clientes')->onDelete('set null');
             $table->timestamps();
         });
