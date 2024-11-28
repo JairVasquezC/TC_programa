@@ -5,7 +5,7 @@
         <h1 class="mt-4 text-center">Registrar Encomienda</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="{{ route('panel') }}">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('ventas_pasajes.index') }}">Encomiendas</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('encomiendas.index') }}">Encomiendas</a></li>
             <li class="breadcrumb-item active">Registrar Encomienda</li>
         </ol>
     
@@ -13,25 +13,6 @@
     <!-- Formulario -->
     <form id="encomiendaForm" method="POST" action="{{ route('encomiendas.store') }}">
         @csrf
-        
-        <!-- Fecha y Estado de Envío -->
-        <div class="card-body text-bg-light">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="fecha_registro" class="form-label">Fecha de Registro</label>
-                    <input type="date" id="fecha_registro" name="fecha_registro" class="form-control" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="estado_envio" class="form-label">Estado de Envío</label>
-                    <select id="estado_envio" name="estado_envio" class="form-control" required>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Enviado">Enviado</option>
-                        <option value="Entregado">Entregado</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
         <!-- Sección: Datos del Cliente REMITENTE -->
         <div class="card-body text-bg-light" id="remitente-section">
             <h4>Datos del Cliente Remitente</h4>
@@ -40,12 +21,14 @@
                     <label for="numero_documento_remitente" class="form-label">Número de Documento:</label>
                     <div class="input-group">
                         <input type="text" id="numero_documento_remitente" class="form-control" placeholder="Ingresar DNI">
-                        <button class="btn btn-primary buscar-cliente-btn">Buscar Cliente</button>
-                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clienteModal">
-                            Crear Cliente
-                        </button>
+                        <button class="btn btn-primary" id="buscarClienteRemitenteBtn">Completar</button>
                     </div>
+                    @error('numero_documento')
+                        <small class="text-danger">{{ '*' . $message }}</small>
+                    @enderror
                 </div>
+                <!-- Input oculto para el ID del cliente remitente -->
+                <input type="hidden" name="id_remitente" id="id_remitente" value="2">
                 <div class="col-md-6">
                     <label for="razon_social_remitente" class="form-label">Nombres y apellidos:</label>
                     <input type="text" id="razon_social_remitente" class="form-control" readonly>
@@ -58,11 +41,10 @@
                     <label for="direccion_remitente" class="form-label">Dirección:</label>
                     <input type="text" id="direccion_remitente" class="form-control" readonly>
                 </div>
-                <!-- Input oculto para el ID del cliente remitente -->
-                <input name="id_remitente" id="id_remitente" value="2">
             </div>
         </div>
 
+        <!-- Sección: Datos del Cliente Destinatario -->
         <div class="card-body text-bg-light" id="destinatario-section">
             <h4>Datos del Cliente Destinatario</h4>
             <div class="row g-3">
@@ -70,12 +52,14 @@
                     <label for="numero_documento_destinatario" class="form-label">Número de Documento:</label>
                     <div class="input-group">
                         <input type="text" id="numero_documento_destinatario" class="form-control" placeholder="Ingresar DNI">
-                        <button class="btn btn-primary buscar-cliente-btn">Buscar Cliente</button>
-                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clienteModal">
-                            Crear Cliente
-                        </button>
+                        <button class="btn btn-primary" id="buscarClienteDestinatarioBtn">Completar</button>
                     </div>
+                    @error('numero_documento')
+                        <small class="text-danger">{{ '*' . $message }}</small>
+                    @enderror
                 </div>
+                <!-- Input oculto para el ID del cliente destintario -->
+                <input type="hidden" name="id_destinatario" id="id_destinatario" value="2">
                 <div class="col-md-6">
                     <label for="razon_social_destinatario" class="form-label">Nombres y apellidos:</label>
                     <input type="text" id="razon_social_destinatario" class="form-control" readonly>
@@ -88,67 +72,85 @@
                     <label for="direccion_destinatario" class="form-label">Dirección:</label>
                     <input type="text" id="direccion_destinatario" class="form-control" readonly>
                 </div>
-                <!-- Input oculto para el ID del cliente destinatario -->
-                <input  name="id_destinatario" id="id_destinatario" value="1">
             </div>
         </div>
         
         <div class="card-body text-bg-light">
-        <!-- Viaje -->
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <label for="viaje_id" class="form-label">Viaje</label>
-                <select id="viaje_id" name="viaje_id" class="form-control" required>
-                    <option value="" disabled selected>Seleccione un viaje</option>
-                    @foreach($viajes as $viaje)
-                        <option value="{{ $viaje->id }}">{{ $viaje->fecha }} - {{ $viaje->hora }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        <div id="paquetes-container">
-            <h4>Agregar Paquetes:</h4>
-            {{-- <label for="paquetes" class="form-label">Paquetes</label> --}}
-            <button type="button" class="btn btn-sm btn-secondary mb-2 my-5" onclick="addPaquete()">Agregar Paquete</button>
-        
-            <!-- Contenedor de los paquetes -->
-            <div class="row mb-3 paquete-entry">
-                <div class="col-md-3">
-                    <input type="text" class="form-control" name="paquetes[0][descripcion]" placeholder="Descripción" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control" name="paquetes[0][dimension_ancho]" placeholder="Ancho (cm)" min="0" step="0.01" onchange="updateTotal()" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control" name="paquetes[0][dimension_largo]" placeholder="Largo (cm)" min="0" step="0.01" onchange="updateTotal()" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control" name="paquetes[0][dimension_grosor]" placeholder="Grosor (cm)" min="0" step="0.01" onchange="updateTotal()" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" class="form-control" name="paquetes[0][peso]" placeholder="Peso (kg)" min="0" step="0.01" onchange="updateTotal()" required>
-                </div>
-                <div class="col-md-1">
-                    <button type="button" class="btn btn-danger" onclick="removePaquete(this)">Eliminar</button>
+            
+            <!-- Fecha y Estado de Envío -->
+            <div class="card-body text-bg-light">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="fecha_registro" class="form-label">Fecha de Registro</label>
+                        <input type="date" id="fecha_registro" name="fecha_registro" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="estado_envio" class="form-label">Estado de Envío</label>
+                        <select id="estado_envio" name="estado_envio" class="form-control" required>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Enviado">Enviado</option>
+                            <option value="Entregado">Entregado</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="mb-3">
-            <strong>Total: $<span id="totalCosto">0.00</span></strong>
-        </div>
-        
-        <!-- Campo oculto para el total que se enviará al backend -->
-        <input type="hidden" name="costo_total" id="costo_total">
 
-
-        <!-- Botón de Guardar -->
-        <div class="row mt-4">
-            <div class="col-md-12 text-center">
-                <button type="submit" class="btn btn-success">Guardar Encomienda</button>
+            
+            <!-- Viaje -->
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label for="viaje_id" class="form-label">Viaje</label>
+                    <select id="viaje_id" name="viaje_id" class="form-control" required>
+                        <option value="" disabled selected>Seleccione un viaje</option>
+                        @foreach($viajes as $viaje)
+                            <option value="{{ $viaje->id }}">{{ $viaje->fecha }} - {{ $viaje->hora }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-        </div>
+
+            <div id="paquetes-container">
+                <h4>Agregar Paquetes:</h4>
+                {{-- <label for="paquetes" class="form-label">Paquetes</label> --}}
+                <button type="button" class="btn btn-sm btn-secondary mb-2 my-5" onclick="addPaquete()">Agregar Paquete</button>
+            
+                <!-- Contenedor de los paquetes -->
+                <div class="row mb-3 paquete-entry">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" name="paquetes[0][descripcion]" placeholder="Descripción" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="paquetes[0][dimension_ancho]" placeholder="Ancho (cm)" min="0" step="0.01" onchange="updateTotal()" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="paquetes[0][dimension_largo]" placeholder="Largo (cm)" min="0" step="0.01" onchange="updateTotal()" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="paquetes[0][dimension_grosor]" placeholder="Grosor (cm)" min="0" step="0.01" onchange="updateTotal()" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="paquetes[0][peso]" placeholder="Peso (kg)" min="0" step="0.01" onchange="updateTotal()" required>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-danger" onclick="removePaquete(this)">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <strong>Total: $<span id="totalCosto">0.00</span></strong>
+            </div>
+            
+            <!-- Campo oculto para el total que se enviará al backend -->
+            <input type="hidden" name="costo_total" id="costo_total">
+
+
+            <!-- Botón de Guardar -->
+            <div class="row mt-4">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-success">Guardar Encomienda</button>
+                </div>
+            </div>
 
         </div>
 
@@ -156,6 +158,78 @@
     </form>
 </div>
 </div>
+</div>
+
+<!-- Modal para crear un cliente -->
+<div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clienteModalLabel">Crear Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="crearClienteForm" method="POST" action="{{ route('clientes.store1') }}">
+                @csrf
+                <div class="modal-body">
+                    <div class="card-body text-bg-light">
+                        <div class="row g-3">
+                            <!-- Tipo de persona -->
+                            <div class="col-md-6">
+                                <label for="tipo_persona" class="form-label">Tipo de cliente:</label>
+                                <select class="form-select" name="tipo_persona" id="tipo_persona" readonly>
+                                    <option value="natural" selected>Persona natural</option>
+                                </select>
+                                @error('tipo_persona')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                            <!-- Nombres y apellidos -->
+                            <div class="col-12" id="box-razon-social">
+                                <label id="label-natural" for="razon_social" class="form-label">Nombres y apellidos:</label>
+                                <input required type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}">
+                                @error('razon_social')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                            <!-- Dirección -->
+                            <div class="col-12">
+                                <label for="direccion" class="form-label">Dirección:</label>
+                                <input required type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion') }}">
+                                @error('direccion')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                            <!-- Tipo de documento -->
+                            <div class="col-md-6">
+                                <label for="documento_id" class="form-label">Tipo de documento:</label>
+                                <select class="form-select" name="documento_id" id="documento_id">
+                                    <option value="" selected disabled>Seleccione una opción</option>
+                                    @foreach ($documentos as $item)
+                                        <option value="{{ $item->id }}" {{ old('documento_id') == $item->id ? 'selected' : '' }}>{{ $item->tipo_documento }}</option>
+                                    @endforeach
+                                </select>
+                                @error('documento_id')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                            <!-- Número de documento -->
+                            <div class="col-md-6">
+                                <label for="numero_documento" class="form-label">Número de documento:</label>
+                                <input required type="text" name="numero_documento" id="modal_numero_documento" class="form-control" value="{{ old('numero_documento') }}">
+                                @error('numero_documento')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -218,73 +292,147 @@ function updateTotal() {
     // Actualizar el campo oculto que se enviará al backend
     document.getElementById('costo_total').value = totalCosto.toFixed(2);
 }
-
-
 </script>
-{{-- 
+
 <script>
-    document.getElementById("buscarClienteBtn").addEventListener("click", function(event) {
-    event.preventDefault(); // Evita recargar la página
+    document.getElementById("buscarClienteRemitenteBtn").addEventListener("click", function(event) {
+        event.preventDefault(); // Evita que el formulario se envíe
 
-    const dni = document.getElementById("numero_documento_input").value.trim();
+        const numeroDocumento = document.getElementById("numero_documento_remitente").value.trim();
 
-    if (dni === "") {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Atención',
-            text: 'Por favor, ingresa un número de documento.',
-            toast: true,
-            position: 'top-right',
-            showConfirmButton: false,
-            timer: 3000
-        });
-        return;
-    }
+        if (numeroDocumento) {
+            fetch(`/buscar-cliente?dni=${numeroDocumento}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const cliente = data.data;
+                        document.getElementById("id_remitente").value = cliente.id;
+                        document.getElementById("razon_social_remitente").value = cliente.nombre;
+                        document.getElementById("documento_id_remitente").value = cliente.tipo_documento;
+                        document.getElementById("direccion_remitente").value = cliente.direccion;
 
-    fetch(`/buscar-cliente?dni=${dni}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                const cliente = data.data;
+                        // Mostrar mensaje de éxito
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cliente encontrado',
+                            text: 'Los datos del cliente se han completado.',
+                            toast: true,
+                            position: 'top-right',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Cliente no encontrado',
+                            text: 'No se pudo encontrar al cliente. Se abrirá el formulario de creación.',
+                            toast: true,
+                            position: 'top-right',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
 
-                // Llenar los campos
-                document.getElementById("razon_social").value = cliente.nombre;
-                document.getElementById("documento_id").value = cliente.tipo_documento;
-                document.getElementById("direccion").value = cliente.direccion;
-
-                // Notificar éxito
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Cliente encontrado',
-                    text: 'Los datos del cliente se han completado exitosamente.',
-                    toast: true,
-                    position: 'top-right',
-                    showConfirmButton: false,
-                    timer: 3000
+                        // Abrir modal automáticamente
+                        document.getElementById("modal_numero_documento").value = numeroDocumento;
+                        document.getElementById("tipo_persona").value = "natural";
+                        const clienteModal = new bootstrap.Modal(document.getElementById('clienteModal'));
+                        clienteModal.show();
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema al buscar el cliente.',
+                        toast: true,
+                        position: 'top-right',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
                 });
-            } else {
-                throw new Error(data.message || 'No se pudo encontrar al cliente.');
-            }
-        })
-        .catch(error => {
+        } else {
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error.message || 'Hubo un problema al realizar la búsqueda.',
+                icon: 'warning',
+                title: 'Campo vacío',
+                text: 'Por favor ingrese un número de documento.',
                 toast: true,
                 position: 'top-right',
                 showConfirmButton: false,
                 timer: 3000
             });
-        });
-});
+        }
+    });
+</script>
 
-    </script> --}}
+<script>
+    document.getElementById("buscarClienteDestinatarioBtn").addEventListener("click", function(event) {
+        event.preventDefault(); // Evita que el formulario se envíe
+
+        const numeroDocumento = document.getElementById("numero_documento_destinatario").value.trim();
+
+        if (numeroDocumento) {
+            fetch(`/buscar-cliente?dni=${numeroDocumento}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const cliente = data.data;
+                        document.getElementById("id_destinatario").value = cliente.id;
+                        document.getElementById("razon_social_destinatario").value = cliente.nombre;
+                        document.getElementById("documento_id_destinatario").value = cliente.tipo_documento;
+                        document.getElementById("direccion_destinatario").value = cliente.direccion;
+
+                        // Mostrar mensaje de éxito
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cliente encontrado',
+                            text: 'Los datos del cliente se han completado.',
+                            toast: true,
+                            position: 'top-right',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Cliente no encontrado',
+                            text: 'No se pudo encontrar al cliente. Se abrirá el formulario de creación.',
+                            toast: true,
+                            position: 'top-right',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+
+                        // Abrir modal automáticamente
+                        document.getElementById("modal_numero_documento").value = numeroDocumento;
+                        document.getElementById("tipo_persona").value = "natural";
+                        const clienteModal = new bootstrap.Modal(document.getElementById('clienteModal'));
+                        clienteModal.show();
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema al buscar el cliente.',
+                        toast: true,
+                        position: 'top-right',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campo vacío',
+                text: 'Por favor ingrese un número de documento.',
+                toast: true,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    });
+</script>
     
     <script>
   document.addEventListener("click", function (event) {

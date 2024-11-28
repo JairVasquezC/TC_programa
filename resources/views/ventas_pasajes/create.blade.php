@@ -5,7 +5,6 @@
 @push('css')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <style>
-    /* Escondemos las secciones de cliente y empresa */
     #cliente-natural-section, #cliente-juridico-section, #venta-pasaje-section {
         display: none;
     }
@@ -69,24 +68,15 @@
                         <input type="hidden" name="id_cliente" id="id_cliente" value="1">
                         <div class="col-md-6">
                             <label for="razon_social" class="form-label">Nombres y apellidos:</label>
-                            <input type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}" required readonly>
-                            @error('razon_social')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
+                            <input type="text" name="razon_social" id="razon_social" class="form-control" readonly>
                         </div>
                         <div class="col-md-6">
                             <label for="documento_id" class="form-label">Tipo de documento:</label>
-                            <input type="text" name="documento_id" id="documento_id" class="form-control" value="{{ old('tipo_documento') }}" required readonly>
-                            @error('documento_id')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
+                            <input type="text" name="documento_id" id="documento_id" class="form-control" readonly>
                         </div>
                         <div class="col-md-12">
                             <label for="direccion" class="form-label">Dirección:</label>
-                            <input type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion') }}" required readonly>
-                            @error('direccion')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
+                            <input type="text" name="direccion" id="direccion" class="form-control" readonly>
                         </div>
                     </div>
                 </div>
@@ -110,24 +100,15 @@
                         <input type="hidden" name="id_empresa" id="id_empresa" value="1">
                         <div class="col-md-6">
                             <label for="razon_social" class="form-label">Razón Social:</label>
-                            <input type="text" name="razon_social" id="razon_social_empresa" class="form-control" value="{{ old('razon_social') }}" required readonly>
-                            @error('razon_social')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
+                            <input type="text" name="razon_social" id="razon_social_empresa" class="form-control" readonly>
                         </div>
                         <div class="col-md-6">
                             <label for="documento_id" class="form-label">Tipo de documento:</label>
-                            <input type="text" name="documento_id" id="documento_id_empresa" class="form-control" value="{{ old('tipo_documento') }}" required readonly>
-                            @error('documento_id')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
+                            <input type="text" name="documento_id" id="documento_id_empresa" class="form-control" readonly>
                         </div>
                         <div class="col-md-12">
                             <label for="direccion" class="form-label">Dirección:</label>
-                            <input type="text" name="direccion" id="direccion_empresa" class="form-control" value="{{ old('direccion') }}" required readonly>
-                            @error('direccion')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
+                            <input type="text" name="direccion" id="direccion_empresa" class="form-control" readonly>
                         </div>
                     </div>
                 </div>
@@ -250,83 +231,6 @@
                                 <small class="text-danger">{{ '*' . $message }}</small>
                                 @enderror
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para crear un cliente -->
-<div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="clienteModalLabel">Crear Cliente</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="crearClienteForm" method="POST" action="{{ route('clientes.store1') }}">
-                @csrf
-                <div class="modal-body">
-                    <div class="card-body text-bg-light">
-                        <div class="row g-3">
-                            <!-- Tipo de persona -->
-                            <div class="col-md-6">
-                                <label for="tipo_persona" class="form-label">Tipo de cliente:</label>
-                                <select class="form-select" name="tipo_persona" id="tipo_persona" readonly>
-                                    <option value="natural" selected>Persona natural</option>
-                                </select>
-                                @error('tipo_persona')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                                @enderror
-                            </div>
-
-                            <!-- Nombres y apellidos -->
-                            <div class="col-12" id="box-razon-social">
-                                <label id="label-natural" for="razon_social" class="form-label">Nombres y apellidos:</label>
-                                <input required type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}">
-                                @error('razon_social')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                                @enderror
-                            </div>
-
-                            <!-- Dirección -->
-                            <div class="col-12">
-                                <label for="direccion" class="form-label">Dirección:</label>
-                                <input required type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion') }}">
-                                @error('direccion')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                                @enderror
-                            </div>
-
-                            <!-- Tipo de documento -->
-                            <div class="col-md-6">
-                                <label for="documento_id" class="form-label">Tipo de documento:</label>
-                                <select class="form-select" name="documento_id" id="documento_id">
-                                    <option value="" selected disabled>Seleccione una opción</option>
-                                    @foreach ($documentos as $item)
-                                        <option value="{{ $item->id }}" {{ old('documento_id') == $item->id ? 'selected' : '' }}>{{ $item->tipo_documento }}</option>
-                                    @endforeach
-                                </select>
-                                @error('documento_id')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                                @enderror
-                            </div>
-
-                            <!-- Número de documento -->
-                            <div class="col-md-6">
-                                <label for="numero_documento" class="form-label">Número de documento:</label>
-                                <input required type="text" name="numero_documento" id="modal_numero_documento" class="form-control" value="{{ old('numero_documento') }}">
-                                @error('numero_documento')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                                @enderror
-                            </div>
-
                         </div>
                     </div>
                 </div>
