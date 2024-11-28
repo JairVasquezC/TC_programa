@@ -258,6 +258,29 @@
       </div>
     </div>
   </section>
+
+  <section class="pt-md-6" id="chatbot">
+    <div class="container">
+        <div class="mb-2 text-center mt-6">
+            <h2>Chatbot de Ayuda</h2>
+            <p>Habla con nuestro asistente virtual para resolver tus dudas o conocer más sobre nuestros servicios.</p>
+        </div>
+        <div class="row justify-content-center">
+            <!-- Columna del chatbot -->
+            <div class="col-lg-8 col-12 mb-4">
+                <div class="chatbox shadow rounded-3 p-4">
+                    <div id="chat-history" class="mb-3" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
+                        <!-- Aquí se mostrarán los mensajes -->
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="chat-input" class="form-control" placeholder="Escribe tu mensaje aquí..." />
+                        <button id="send-button" class="btn btn-primary">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
   
   
 
@@ -508,6 +531,56 @@
         animateCount("stat2", 500, 2000); // Envíos completados: 500 en 2s
         animateCount("stat3", 10, 2000);  // Choferes capacitados: 75 en 2s
         animateCount("stat4", 15, 2000); // Vehículos en operación: 120 en 2s
+    });
+
+    document.getElementById('send-button').addEventListener('click', async () => {
+        const chatInput = document.getElementById('chat-input');
+        const chatHistory = document.getElementById('chat-history');
+        const userMessage = chatInput.value.trim();
+
+        if (userMessage === "") return;
+
+        // Mostrar mensaje del usuario
+        const userBubble = document.createElement('div');
+        userBubble.textContent = userMessage;
+        userBubble.style.textAlign = 'right';
+        userBubble.style.margin = '5px 0';
+        userBubble.style.padding = '10px';
+        userBubble.style.borderRadius = '10px';
+        userBubble.style.backgroundColor = '#E01A1A';
+        userBubble.style.color = 'white';
+        chatHistory.appendChild(userBubble);
+
+        chatInput.value = ""; // Limpiar campo de entrada
+
+        // Hacer la solicitud al chatbot
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ msg: userMessage }),
+            });
+
+            const data = await response.json();
+
+            // Mostrar respuesta del chatbot
+            const botBubble = document.createElement('div');
+            botBubble.textContent = data.response;
+            botBubble.style.textAlign = 'left';
+            botBubble.style.margin = '5px 0';
+            botBubble.style.padding = '10px';
+            botBubble.style.borderRadius = '10px';
+            botBubble.style.backgroundColor = '#F5F5F5';
+            botBubble.style.color = '#000';
+            chatHistory.appendChild(botBubble);
+
+            // Scroll automático al final del chat
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        } catch (error) {
+            console.error('Error al enviar el mensaje:', error);
+        }
     });
   </script>
 @endsection

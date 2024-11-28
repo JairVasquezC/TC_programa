@@ -1,6 +1,8 @@
 <?php
 
 //use App\Http\Controllers\categoriaController;
+
+use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\clienteController;
 use App\Http\Controllers\compraController;
 use App\Http\Controllers\encomiendaController;
@@ -48,6 +50,8 @@ Route::get('/nosotros', function () {
 });
 
 Route::get('/seguimientos', [SeguimientoController::class, 'index'])->name('seguimientos');
+
+// Route::post('/chat', [ChatBotController::class, 'index']);
 
 
 
