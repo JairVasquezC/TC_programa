@@ -55,9 +55,9 @@
                         <td>{{ $venta->empresa->persona->razon_social ?? 'No asignada' }}</td>
                         <td>
                             <div class="d-flex justify-content-around">
-                                @can('editar-venta_pasaje')
+                                {{-- @can('editar-venta_pasaje')
                                 <a href="{{ route('ventas_pasajes.edit', $venta) }}" class="btn btn-primary btn-sm">Editar</a>
-                                @endcan
+                                @endcan --}}
 
                                 @can('eliminar-venta_pasaje')
                                 <form action="{{ route('ventas_pasajes.destroy', $venta) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta venta?')">
@@ -68,7 +68,7 @@
                                 @endcan
 
                                 <!-- Botón para generar la boleta -->
-                                <a href="{{ route('ventas_pasajes.boleta', $venta) }}" class="btn btn-info btn-sm">Generar Boleta</a>
+                                <a href="{{ route('ventas_pasajes.boleta', $venta) }}" class="btn btn-primary btn-sm">Generar Boleta</a>
                             </div>
                         </td>
                     </tr>
