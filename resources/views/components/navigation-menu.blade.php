@@ -148,6 +148,12 @@
                     Venta de Pasajes
                 </a>
                 @endcan
+                @can('ver-venta_pasaje')
+                <a class="nav-link text-white" href="{{ route('encomiendas.index') }}">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-box"></i></div>
+                    Encomiendas
+                </a>
+                @endcan
 
                 {{-- @can('ver-proveedore')
                 <a class="nav-link text-white" href="{{ route('proveedores.index') }}">

@@ -3,6 +3,7 @@
 //use App\Http\Controllers\categoriaController;
 use App\Http\Controllers\clienteController;
 use App\Http\Controllers\compraController;
+use App\Http\Controllers\encomiendaController;
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\logoutController;
@@ -89,4 +90,6 @@ Route::get('/500', function () {
 Route::get('/buscar-cliente', [ventaPasajeController::class, 'buscarClientePorDni'])->name('buscar-cliente');
 Route::post('/crear-persona', [ClienteController::class, 'storeAjax'])->name('crear.persona');
 
+
+Route::resource('encomiendas', encomiendaController::class);
 
