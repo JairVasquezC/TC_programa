@@ -69,7 +69,7 @@ class ventaPasajeController extends Controller
         $venta->id_cliente = $validated['id_cliente'];
         $venta->costo = $validated['costo'];
         $venta->fecha_venta = $validated['fecha_venta'];
-        $venta->estado = 'REGISTRADO'; // Siempre REGISTRADO
+        $venta->estado = $validated['estado'];
         $venta->id_empresa = $id_empresa; // Null si tipo_cliente es natural
         $venta->save();
     
@@ -113,10 +113,11 @@ class ventaPasajeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(VentaPasaje $ventaPasaje)
+    public function destroy(VentaPasaje $ventas_pasaje)
     {
+        Log::info($ventas_pasaje);
         // Eliminar la venta de pasaje
-        $ventaPasaje->delete();
+        $ventas_pasaje->delete();
 
         return redirect()->route('ventas_pasajes.index')->with('success', 'Venta de pasaje eliminada');
     }

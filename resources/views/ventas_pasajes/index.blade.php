@@ -51,7 +51,7 @@
                         <td>{{ $venta->costo }}</td>
                         <td>{{ $venta->fecha_venta }}</td>
                         <td>{{ $venta->estado ?? 'No definido' }}</td>
-                        <td>{{ $venta->empresa->nombre ?? 'No asignada' }}</td>
+                        <td>{{ $venta->empresa->persona->razon_social ?? 'No asignada' }}</td>
                         <td>
                             <div class="d-flex justify-content-around">
                                 @can('editar-venta_pasaje')
