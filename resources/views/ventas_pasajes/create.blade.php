@@ -53,28 +53,26 @@
                 <div id="cliente-natural-section">
                     <h4>Datos del Cliente</h4>
                     <div class="row g-3">
-                        <div class="row g-3">
-                            <div class="col-md-12">
-                                <label for="numero_documento_input" class="form-label">Número de Documento:</label>
-                                <div class="input-group">
-                                    <input type="text" id="numero_documento_input" class="form-control" placeholder="Ingresar DNI">
-                                    <button class="btn btn-primary" id="buscarClienteBtn">Completar</button>
-                                </div>
-                                @error('numero_documento')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                                @enderror
+                        <div class="col-md-6">
+                            <label for="numero_documento_input" class="form-label">Número de Documento:</label>
+                            <div class="input-group">
+                                <input type="text" id="numero_documento_input" class="form-control" placeholder="Ingresar DNI">
+                                <button class="btn btn-primary" id="buscarClienteBtn">Completar</button>
                             </div>
-                        </div>        
+                            @error('numero_documento')
+                            <small class="text-danger">{{ '*' . $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="documento_id" class="form-label">Tipo de documento:</label>
+                            <input type="text" name="documento_id" id="documento_id" class="form-control" readonly>
+                        </div>   
                         <input type="hidden" name="id_cliente" id="id_cliente" value="1">
                         <div class="col-md-6">
                             <label for="razon_social" class="form-label">Nombres y apellidos:</label>
                             <input type="text" name="razon_social" id="razon_social" class="form-control" readonly>
                         </div>
                         <div class="col-md-6">
-                            <label for="documento_id" class="form-label">Tipo de documento:</label>
-                            <input type="text" name="documento_id" id="documento_id" class="form-control" readonly>
-                        </div>
-                        <div class="col-md-12">
                             <label for="direccion" class="form-label">Dirección:</label>
                             <input type="text" name="direccion" id="direccion" class="form-control" readonly>
                         </div>
@@ -87,7 +85,7 @@
                 <div id="cliente-juridico-section">
                     <h4>Datos de la Empresa</h4>
                     <div class="row g-3">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <label for="numero_documento_input_empresa" class="form-label">Número de Documento (RUC):</label>
                             <div class="input-group">
                                 <input type="text" id="numero_documento_input_empresa" class="form-control" placeholder="Ingresar RUC">
@@ -97,16 +95,16 @@
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
+                        <div class="col-md-6">
+                            <label for="documento_id" class="form-label">Tipo de documento:</label>
+                            <input type="text" name="documento_id" id="documento_id_empresa" class="form-control" readonly>
+                        </div>
                         <input type="hidden" name="id_empresa" id="id_empresa" value="1">
                         <div class="col-md-6">
                             <label for="razon_social" class="form-label">Razón Social:</label>
                             <input type="text" name="razon_social" id="razon_social_empresa" class="form-control" readonly>
                         </div>
                         <div class="col-md-6">
-                            <label for="documento_id" class="form-label">Tipo de documento:</label>
-                            <input type="text" name="documento_id" id="documento_id_empresa" class="form-control" readonly>
-                        </div>
-                        <div class="col-md-12">
                             <label for="direccion" class="form-label">Dirección:</label>
                             <input type="text" name="direccion" id="direccion_empresa" class="form-control" readonly>
                         </div>
@@ -118,7 +116,7 @@
                 <div id="venta-pasaje-section">
                     <h4>Datos de la Venta del Pasaje</h4>
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="viaje_id" class="form-label">Viaje:</label>
                             <select name="viaje_id" id="viaje_id" class="form-control">
                                 <option value="">Seleccionar viaje</option>
@@ -132,21 +130,14 @@
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="costo" class="form-label">Costo:</label>
                             <input type="number" name="costo" id="costo" class="form-control" value="{{ old('costo') }}" required>
                             @error('costo')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
-                        <div class="col-md-6">
-                            <label for="fecha_venta" class="form-label">Fecha de Venta:</label>
-                            <input type="date" name="fecha_venta" id="fecha_venta" class="form-control" value="{{ old('fecha_venta') }}" required>
-                            @error('fecha_venta')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="estado" class="form-label">Estado de pago:</label>
                             <select name="estado" id="estado" class="form-control">
                                 <option value="">Seleccionar estado</option>

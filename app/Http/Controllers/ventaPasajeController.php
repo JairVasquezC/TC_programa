@@ -9,7 +9,7 @@ use App\Models\Documento;
 use Illuminate\Http\Request;
 use App\Models\Persona;
 use Illuminate\Support\Facades\Log;
-
+use Carbon\Carbon;
 
 
 class ventaPasajeController extends Controller
@@ -56,7 +56,6 @@ class ventaPasajeController extends Controller
             'id_cliente' => 'required|integer',
             'viaje_id' => 'required|integer',
             'costo' => 'required|numeric|min:0',
-            'fecha_venta' => 'required|date',
             'estado' => 'required|string|in:transferencia,credito,efectivo,yape_plin',
         ]);
     
@@ -68,7 +67,7 @@ class ventaPasajeController extends Controller
         $venta->id_viaje = $validated['viaje_id'];
         $venta->id_cliente = $validated['id_cliente'];
         $venta->costo = $validated['costo'];
-        $venta->fecha_venta = $validated['fecha_venta'];
+        $venta->fecha_venta = Carbon::now();
         $venta->estado = $validated['estado'];
         $venta->id_empresa = $id_empresa; // Null si tipo_cliente es natural
         $venta->save();

@@ -9,6 +9,7 @@ use App\Models\Documento;
 use App\Models\Viaje;
 use App\Models\Paquete;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class encomiendaController extends Controller
 {
@@ -50,12 +51,10 @@ class encomiendaController extends Controller
             'id_destinatario' => 'required|integer',
             'viaje_id' => 'required|integer',
             'costo_total' => 'required|numeric|min:0',
-            'fecha_registro' => 'required|date',
-            'estado_envio' => 'required|string',
         ]);
     
         // Determinar el valor de id_empresa
-        //$id_empresa = $request->tipo_cliente === 'natural' ? null : $request->id_empresa;
+        $id_empresa = $request->tipo_cliente === 'natural' ? null : $request->id_empresa;
     
         // Crear el registro
         $encomienda = new Encomienda();
@@ -63,9 +62,9 @@ class encomiendaController extends Controller
         $encomienda->id_remitente = $validated['id_remitente'];
         $encomienda->id_destinatario = $validated['id_destinatario'];
         $encomienda->costo_total = $validated['costo_total'];
-        $encomienda->fecha_registro = $validated['fecha_registro'];
-        $encomienda->estado_envio = $validated['estado_envio'];
-        $encomienda->id_empresa = "6"; // Null si tipo_cliente es natural
+        $encomienda->fecha_registro = Carbon::now();
+        $encomienda->estado_envio = 'Pedido Registrado';
+        $encomienda->id_empresa = $id_empresa;// Null si tipo_cliente es natural
         $encomienda->save();
 
     // Verificar si hay paquetes y almacenarlos

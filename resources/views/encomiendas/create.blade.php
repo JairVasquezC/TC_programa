@@ -17,7 +17,7 @@
         <div class="card-body text-bg-light" id="remitente-section">
             <h4>Datos del Cliente Remitente</h4>
             <div class="row g-3">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="numero_documento_remitente" class="form-label">Número de Documento:</label>
                     <div class="input-group">
                         <input type="text" id="numero_documento_remitente" class="form-control" placeholder="Ingresar DNI">
@@ -37,7 +37,7 @@
                     <label for="documento_id_remitente" class="form-label">Tipo de documento:</label>
                     <input type="text" id="documento_id_remitente" class="form-control" readonly>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="direccion_remitente" class="form-label">Dirección:</label>
                     <input type="text" id="direccion_remitente" class="form-control" readonly>
                 </div>
@@ -48,7 +48,7 @@
         <div class="card-body text-bg-light" id="destinatario-section">
             <h4>Datos del Cliente Destinatario</h4>
             <div class="row g-3">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="numero_documento_destinatario" class="form-label">Número de Documento:</label>
                     <div class="input-group">
                         <input type="text" id="numero_documento_destinatario" class="form-control" placeholder="Ingresar DNI">
@@ -68,7 +68,7 @@
                     <label for="documento_id_destinatario" class="form-label">Tipo de documento:</label>
                     <input type="text" id="documento_id_destinatario" class="form-control" readonly>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="direccion_destinatario" class="form-label">Dirección:</label>
                     <input type="text" id="direccion_destinatario" class="form-control" readonly>
                 </div>
@@ -79,7 +79,7 @@
         <div class="card-body text-bg-light" id="empresa-section">
             <h4>Datos de la Empresa</h4>
             <div class="row g-3">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="numero_documento_empresa" class="form-label">Número de Documento:</label>
                     <div class="input-group">
                         <input type="text" id="numero_documento_empresa" class="form-control" placeholder="Ingresar RUC">
@@ -99,37 +99,19 @@
                     <label for="documento_id_empresa" class="form-label">Tipo de documento:</label>
                     <input type="text" id="documento_id_empresa" class="form-control" readonly>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="direccion_empresa" class="form-label">Dirección:</label>
                     <input type="text" id="direccion_empresa" class="form-control" readonly>
                 </div>
             </div>
         </div>
-
-
+        
+    <!-- Sección: Datos del Cliente Empresa -->
+    <div class="card-body text-bg-light" id="empresa-section">
+        <h4>Datos de la Encomienda</h4>
         <div class="card-body text-bg-light">
-            <!-- Fecha y Estado de Envío -->
-            <div class="card-body text-bg-light">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="fecha_registro" class="form-label">Fecha de Registro</label>
-                        <input type="date" id="fecha_registro" name="fecha_registro" class="form-control" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="estado_envio" class="form-label">Estado de Envío</label>
-                        <select id="estado_envio" name="estado_envio" class="form-control" required>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Enviado">Enviado</option>
-                            <option value="Entregado">Entregado</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            
-            <!-- Viaje -->
             <div class="row mb-3">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label for="viaje_id" class="form-label">Viaje</label>
                     <select id="viaje_id" name="viaje_id" class="form-control" required>
                         <option value="" disabled selected>Seleccione un viaje</option>
@@ -143,15 +125,14 @@
                         <small class="text-danger">{{ '*' . $message }}</small>
                     @enderror
                 </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-sm btn-secondary mb-2 my-4" onclick="addPaquete()">Agregar Paquete</button>
+                </div>
             </div>
 
-            <div id="paquetes-container">
-                <h4>Agregar Paquetes:</h4>
-                {{-- <label for="paquetes" class="form-label">Paquetes</label> --}}
-                <button type="button" class="btn btn-sm btn-secondary mb-2 my-5" onclick="addPaquete()">Agregar Paquete</button>
-            
+            <div class="row mb-3" id="paquetes-container">
                 <!-- Contenedor de los paquetes -->
-                <div class="row mb-3 paquete-entry">
+                <div class="row g3 paquete-entry">
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="paquetes[0][descripcion]" placeholder="Descripción" required>
                     </div>
