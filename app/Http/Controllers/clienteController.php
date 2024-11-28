@@ -117,4 +117,46 @@ class clienteController extends Controller
 
         return redirect()->route('clientes.index')->with('success', $message);
     }
+
+    public function storeAjax(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Validar los datos del formulario
+            $validated = $request->validate([
+                'tipo_persona' => 'required|string',
+                'razon_social' => 'required|string|max:255',
+                'direccion' => 'required|string|max:255',
+                'documento_id' => 'required|exists:documentos,id',
+                'numero_documento' => 'required|string|max:255',
+                // Otros campos de validación...
+            ]);
+
+            // Crear la persona y el cliente asociado
+            $persona = Persona::create($validated);
+            $persona->cliente()->create([
+                'persona_id' => $persona->id
+            ]);
+
+            DB::commit();
+
+            // Respuesta JSON con mensaje
+            return response()->json([
+                'success' => true,
+                'message' => 'Persona creada exitosamente', // Asegúrate de que el mensaje sea correcto
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            // Respuesta en caso de error
+            return response()->json([
+                'success' => false,
+                'message' => 'Hubo un error al crear la persona. Inténtalo de nuevo.',
+            ]);
+        }
+    }
+
+    
+
 }

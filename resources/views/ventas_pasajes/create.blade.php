@@ -55,48 +55,49 @@
                     <h4>Datos del Cliente Natural</h4>
                     <div class="row g-3">
                         <div class="col-md-12">
-                            <label for="cliente_id" class="form-label">Seleccionar Cliente:</label>
-                            <select name="cliente_id" id="cliente_id" class="form-control"">
-                                <option value="">Seleccionar cliente</option>
-                                @foreach ($clientes as $cliente)
-                                    <option value="{{ $cliente->id }}">{{$cliente->persona->numero_documento}}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('cliente_id')
+                            <label for="numero_documento_input" class="form-label">Número de Documento:</label>
+                            <div class="input-group">
+                                <input type="text" id="numero_documento_input" class="form-control" placeholder="Ingresar DNI">
+                                <button class="btn btn-primary" id="buscarClienteBtn">Buscar Cliente</button>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clienteModal">
+                                    Crear Cliente
+                                </button>
+                            </div>
+                            @error('numero_documento')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>            
                         <div class="col-12">
                             <label for="razon_social" class="form-label">Nombres y apellidos:</label>
-                            <input type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}" required>
+                            <input type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}" required readonly>
                             @error('razon_social')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="documento_id" class="form-label">Tipo de documento:</label>
-                            <select name="documento_id" id="documento_id" class="form-control">
-                                <option value="">Seleccionar tipo de documento</option>
-                                @foreach ($documentos as $item)
-                                    <option value="{{ $item->id }}" {{ old('documento_id') == $item->id ? 'selected' : '' }}>
-                                        {{ $item->tipo_documento }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="documento_id" id="documento_id" class="form-control" value="{{ old('tipo_documento') }}" required readonly>
                             @error('documento_id')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="numero_documento" class="form-label">Número de documento:</label>
-                            <input type="text" name="numero_documento" id="numero_documento" class="form-control" value="{{ old('numero_documento') }}" required>
+                            <input type="text" name="numero_documento" id="numero_documento" class="form-control" value="{{ old('numero_documento') }}" required readonly>
                             @error('numero_documento')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="col-md-12">
+                            <label for="direccion" class="form-label">Dirección:</label>
+                            <input type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion') }}" required readonly>
+                            @error('direccion')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
                     </div>
                 </div>
+
             </div>
             
             <div class="card-body text-bg-light">
@@ -189,6 +190,88 @@
             </div>
         </form>
     </div>
+
+    <!-- Modal -->
+<!-- Modal para crear un cliente -->
+    <div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="clienteModalLabel">Crear Cliente</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="crearClienteForm" method="POST" action="{{ route('clientes.store') }}">
+            @csrf
+            <div class="modal-body">
+            <div class="card-body text-bg-light">
+                <div class="row g-3">
+
+                <!-- Tipo de persona -->
+                <div class="col-md-6">
+                    <label for="tipo_persona" class="form-label">Tipo de cliente:</label>
+                    <select class="form-select" name="tipo_persona" id="tipo_persona">
+                        <option value="" disabled>Seleccione una opción</option>
+                        <option value="natural" selected>Persona natural</option>
+                        <option value="juridica" {{ old('tipo_persona') == 'juridica' ? 'selected' : '' }}>Persona jurídica</option>
+                    </select>
+                    @error('tipo_persona')
+                    <small class="text-danger">{{'*'.$message}}</small>
+                    @enderror
+                </div>
+
+                <!-- Razón social -->
+                <div class="col-12" id="box-razon-social">
+                    <label id="label-natural" for="razon_social" class="form-label">Nombres y apellidos:</label>
+                    <input required type="text" name="razon_social" id="razon_social" class="form-control" value="{{old('razon_social')}}">
+                    @error('razon_social')
+                    <small class="text-danger">{{'*'.$message}}</small>
+                    @enderror
+                </div>
+
+                <!-- Dirección -->
+                <div class="col-12">
+                    <label for="direccion" class="form-label">Dirección:</label>
+                    <input required type="text" name="direccion" id="direccion" class="form-control" value="{{old('direccion')}}">
+                    @error('direccion')
+                    <small class="text-danger">{{'*'.$message}}</small>
+                    @enderror
+                </div>
+
+                <!-- Documento -->
+                <div class="col-md-6">
+                    <label for="documento_id" class="form-label">Tipo de documento:</label>
+                    <select class="form-select" name="documento_id" id="documento_id">
+                    <option value="" selected disabled>Seleccione una opción</option>
+                    @foreach ($documentos as $item)
+                        <option value="{{$item->id}}" {{ old('documento_id') == $item->id ? 'selected' : '' }}>{{$item->tipo_documento}}</option>
+                    @endforeach
+                    </select>
+                    @error('documento_id')
+                    <small class="text-danger">{{'*'.$message}}</small>
+                    @enderror
+                </div>
+
+                <div class="col-md-6">
+                    <label for="numero_documento" class="form-label">Numero de documento:</label>
+                    <input required type="text" name="numero_documento" id="numero_documento" class="form-control" value="{{old('numero_documento')}}">
+                    @error('numero_documento')
+                    <small class="text-danger">{{'*'.$message}}</small>
+                    @enderror
+                </div>
+
+                </div>
+            </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+
+
 </div>
 
 @endsection
@@ -236,5 +319,72 @@
             });
     }
 </script>
+
+<script>
+document.getElementById("buscarClienteBtn").addEventListener("click", function(event) {
+    event.preventDefault();  // Evita que el formulario se envíe y recargue la página
+
+    const dni = document.getElementById("numero_documento_input").value.trim(); // Obtenemos el DNI ingresado
+
+    if (dni) {
+        fetch(`/buscar-cliente?dni=${dni}`)
+            .then(response => response.json()) // Convertimos la respuesta a JSON
+            .then(data => {
+                console.log(data);  // Muestra la data de la respuesta en la consola
+
+                if (data.success) {
+                    // Si el cliente es encontrado, llenamos los campos del formulario
+                    const cliente = data.data;
+                    document.getElementById("razon_social").value = cliente.nombre; // Nombres y apellidos
+                    document.getElementById("documento_id").value = cliente.tipo_documento; // Tipo de documento
+                    document.getElementById("numero_documento").value = cliente.numero_documento; // Número de documento
+                    document.getElementById("direccion").value = cliente.direccion; // Dirección
+
+                    // Mostrar mensaje de éxito con SweetAlert2 (Toast)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cliente encontrado',
+                        text: 'Los datos del cliente se han completado exitosamente.',
+                        toast: true,
+                        position: 'top-right',  // Ubicación del toast
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                } else {
+                    // Mostrar mensaje de error con SweetAlert2 (Toast)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Cliente no encontrado',
+                        text: data.message || 'No se pudo encontrar al cliente.',
+                        toast: true,
+                        position: 'top-right',  // Ubicación del toast
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al realizar la solicitud:', error);
+
+                // Mostrar mensaje de error con SweetAlert2 en caso de fallo de la solicitud
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error en la solicitud',
+                    text: 'Hubo un problema al realizar la búsqueda del cliente.',
+                    toast: true,
+                    position: 'top-right',  // Ubicación del toast
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+    } else {
+        alert("Por favor ingrese un número de DNI.");
+    }
+});
+
+
+</script>
+
+
 @endpush
 

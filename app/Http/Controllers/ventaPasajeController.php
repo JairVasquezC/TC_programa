@@ -7,6 +7,9 @@ use App\Models\Cliente;
 use App\Models\Viaje;
 use App\Models\Documento;
 use Illuminate\Http\Request;
+use App\Models\Persona;
+
+
 
 class ventaPasajeController extends Controller
 {
@@ -102,4 +105,57 @@ class ventaPasajeController extends Controller
 
         return redirect()->route('ventas_pasajes.index')->with('success', 'Venta de pasaje eliminada');
     }
+
+    public function buscarClientePorDni(Request $request)
+    {
+        try {
+            // Validación de entrada
+            $request->validate(['dni' => 'required|string']);
+    
+            // Buscar persona por DNI
+            $persona = Persona::where('numero_documento', $request->dni)->first();
+            
+            // Si no se encuentra la persona
+            if (!$persona) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Persona no encontrada',
+                ], 404);
+            }
+    
+            // Si la persona no tiene cliente asociado
+            if (!$persona->cliente) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cliente no asociado a esta persona',
+                ], 404);
+            }
+    
+            // Verificar relación con documento
+            $tipoDocumento = $persona->documento->tipo_documento ?? 'Desconocido';
+    
+            // Preparar datos para retornar
+            $clienteData = [
+                'nombre' => $persona->razon_social,
+                'tipo_documento' => $tipoDocumento,
+                'numero_documento' => $persona->numero_documento,
+                'direccion' => $persona->direccion,
+            ];
+        
+            return response()->json([
+                'success' => true,
+                'data' => $clienteData,
+            ]);
+        } catch (\Exception $e) {    
+            return response()->json([
+                'success' => false,
+                'message' => 'Error interno del servidor',
+            ], 500);
+        }
+    }
+
+    
+
+
+    
 }

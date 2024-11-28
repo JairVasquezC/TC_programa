@@ -67,6 +67,7 @@ Route::resources([
     'vehiculos'=>vehiculoController::class,
     'viajes'=> viajeController::class,
     'ventas_pasajes'=> ventaPasajeController::class
+    
 ]);
 Route::get('/clientes/{id}', [ClienteController::class, 'getClientData']);
 
@@ -84,3 +85,8 @@ Route::get('/404', function () {
 Route::get('/500', function () {
     return view('pages.500');
 });
+
+Route::get('/buscar-cliente', [ventaPasajeController::class, 'buscarClientePorDni'])->name('buscar-cliente');
+Route::post('/crear-persona', [ClienteController::class, 'storeAjax'])->name('crear.persona');
+
+
