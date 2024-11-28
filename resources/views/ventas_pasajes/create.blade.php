@@ -66,6 +66,7 @@
                                 @enderror
                             </div>
                         </div>        
+                        <input type="hidden" name="id_cliente" id="id_cliente" value="1">
                         <div class="col-md-6">
                             <label for="razon_social" class="form-label">Nombres y apellidos:</label>
                             <input type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}" required readonly>
@@ -106,6 +107,7 @@
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
+                        <input type="hidden" name="id_empresa" id="id_empresa" value="1">
                         <div class="col-md-6">
                             <label for="razon_social" class="form-label">Razón Social:</label>
                             <input type="text" name="razon_social" id="razon_social_empresa" class="form-control" value="{{ old('razon_social') }}" required readonly>
@@ -451,7 +453,7 @@
                 .then(data => {
                     if (data.success) {
                         const cliente = data.data;
-
+                        document.getElementById("id_cliente").value = cliente.id;
                         document.getElementById("razon_social").value = cliente.nombre;
                         document.getElementById("documento_id").value = cliente.tipo_documento;
                         document.getElementById("direccion").value = cliente.direccion;
@@ -522,6 +524,7 @@ document.getElementById("buscarEmpresaBtn").addEventListener("click", function(e
                 if (data.success) {
                     // Si el cliente es encontrado, llenamos los campos del formulario
                     const cliente = data.data;
+                    document.getElementById("id_empresa").value = cliente.id;
                     document.getElementById("razon_social_empresa").value = cliente.nombre; // Nombres y apellidos
                     document.getElementById("documento_id_empresa").value = cliente.tipo_documento; // Tipo de documento
                     document.getElementById("direccion_empresa").value = cliente.direccion; // Dirección

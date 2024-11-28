@@ -47,7 +47,7 @@
                     @foreach($ventasPasajes as $venta)
                     <tr>
                         <td>{{ $venta->viaje->fecha }} - {{ $venta->viaje->hora }}</td>
-                        <td>{{ $venta->cliente->nombre }}</td>
+                        <td>{{ $venta->cliente->persona->razon_social }}</td>
                         <td>{{ $venta->costo }}</td>
                         <td>{{ $venta->fecha_venta }}</td>
                         <td>{{ $venta->estado ?? 'No definido' }}</td>

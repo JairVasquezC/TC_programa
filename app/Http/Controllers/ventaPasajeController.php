@@ -8,6 +8,7 @@ use App\Models\Viaje;
 use App\Models\Documento;
 use Illuminate\Http\Request;
 use App\Models\Persona;
+use Illuminate\Support\Facades\Log;
 
 
 
@@ -47,20 +48,34 @@ class ventaPasajeController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los datos del formulario
+        Log::info('Datos recibidos:', $request->all());
+
+        // Validar los datos recibidos
         $validated = $request->validate([
-            'id_viaje' => 'required|exists:viajes,id',
-            'id_cliente' => 'required|exists:clientes,id',
-            'costo' => 'required|numeric',
-            'fecha_venta' => 'nullable|date',
-            'estado' => 'nullable|string|max:15',
-            'id_empresa' => 'nullable|exists:clientes,id',
+            'tipo_cliente' => 'required|string|in:natural,juridica',
+            'id_cliente' => 'required|integer',
+            'viaje_id' => 'required|integer',
+            'costo' => 'required|numeric|min:0',
+            'fecha_venta' => 'required|date',
+            'estado' => 'required|string|in:transferencia,credito,efectivo,yape_plin',
         ]);
+    
+        // Determinar el valor de id_empresa
+        $id_empresa = $request->tipo_cliente === 'natural' ? null : $request->id_empresa;
+    
+        // Crear el registro
+        $venta = new VentaPasaje();
+        $venta->id_viaje = $validated['viaje_id'];
+        $venta->id_cliente = $validated['id_cliente'];
+        $venta->costo = $validated['costo'];
+        $venta->fecha_venta = $validated['fecha_venta'];
+        $venta->estado = 'REGISTRADO'; // Siempre REGISTRADO
+        $venta->id_empresa = $id_empresa; // Null si tipo_cliente es natural
+        $venta->save();
+    
+        // Responder al cliente
+        return redirect()->route('ventas_pasajes.index')->with('success', 'Venta de pasaje creada exitosamente.');
 
-        // Crear una nueva venta de pasaje
-        VentaPasaje::create($validated);
-
-        return redirect()->route('ventas_pasajes.index')->with('success', 'Venta de pasaje registrada');
     }
 
     /**
@@ -136,6 +151,7 @@ class ventaPasajeController extends Controller
     
             // Preparar datos para retornar
             $clienteData = [
+                'id' => $persona->id,
                 'nombre' => $persona->razon_social,
                 'tipo_documento' => $tipoDocumento,
                 'numero_documento' => $persona->numero_documento,
