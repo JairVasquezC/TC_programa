@@ -75,8 +75,39 @@
             </div>
         </div>
         
+        <!-- Sección: Datos del Cliente Empresa -->
+        <div class="card-body text-bg-light" id="empresa-section">
+            <h4>Datos de la Empresa</h4>
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label for="numero_documento_empresa" class="form-label">Número de Documento:</label>
+                    <div class="input-group">
+                        <input type="text" id="numero_documento_empresa" class="form-control" placeholder="Ingresar RUC">
+                        <button class="btn btn-primary" id="buscarClienteEmpresaBtn">Completar</button>
+                    </div>
+                    @error('numero_documento')
+                        <small class="text-danger">{{ '*' . $message }}</small>
+                    @enderror
+                </div>
+                <!-- Input oculto para el ID del cliente destintario -->
+                <input type="hidden" name="id_empresa" id="id_empresa" value="2">
+                <div class="col-md-6">
+                    <label for="razon_social_empresa" class="form-label">Nombres y apellidos:</label>
+                    <input type="text" id="razon_social_empresa" class="form-control" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label for="documento_id_empresa" class="form-label">Tipo de documento:</label>
+                    <input type="text" id="documento_id_empresa" class="form-control" readonly>
+                </div>
+                <div class="col-md-12">
+                    <label for="direccion_empresa" class="form-label">Dirección:</label>
+                    <input type="text" id="direccion_empresa" class="form-control" readonly>
+                </div>
+            </div>
+        </div>
+
+
         <div class="card-body text-bg-light">
-            
             <!-- Fecha y Estado de Envío -->
             <div class="card-body text-bg-light">
                 <div class="row mb-3">
@@ -103,9 +134,14 @@
                     <select id="viaje_id" name="viaje_id" class="form-control" required>
                         <option value="" disabled selected>Seleccione un viaje</option>
                         @foreach($viajes as $viaje)
-                            <option value="{{ $viaje->id }}">{{ $viaje->fecha }} - {{ $viaje->hora }}</option>
+                            <option value="{{ $viaje->id }}" {{ old('viaje_id') == $viaje->id ? 'selected' : '' }}>
+                                {{ $viaje->fecha }} - {{ $viaje->hora }}
+                            </option>
                         @endforeach
                     </select>
+                    @error('viaje_id')
+                        <small class="text-danger">{{ '*' . $message }}</small>
+                    @enderror
                 </div>
             </div>
 
@@ -434,153 +470,74 @@ function updateTotal() {
     });
 </script>
     
-    <script>
-  document.addEventListener("click", function (event) {
-    if (event.target.classList.contains("buscar-cliente-btn")) {
-        const section = event.target.closest(".card-body"); // Encuentra la sección contenedora
-        const dniInput = section.querySelector("input[id='numero_documento_remitente']"); // Input del DNI
-        const razonSocialInput = section.querySelector("input[id='razon_social_remitente']");
-        const documentoIdInput = section.querySelector("input[id='documento_id_remitente']");
-        const direccionInput = section.querySelector("input[id='direccion_remitente']");
-        const idRemitenteInput = section.querySelector("input[id='id_remitente']"); // Input oculto para el ID del cliente
-
-        const dni = dniInput.value.trim();
-
-        if (dni) {
-            fetch(`/buscar-cliente?dni=${dni}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        // Si el cliente es encontrado, llenamos los campos del formulario
-                        const cliente = data.data;
-                        razonSocialInput.value = cliente.nombre;
-                        documentoIdInput.value = cliente.tipo_documento;
-                        direccionInput.value = cliente.direccion;
-                        idRemitenteInput.value = cliente.id; // Asignar el ID del cliente al input oculto
-
-                        // Mostrar mensaje de éxito
-                        Swal.fire({
-                            icon: "success",
-                            title: "Cliente encontrado",
-                            text: "Los datos del cliente se han completado exitosamente.",
-                            toast: true,
-                            position: "top-right",
-                            showConfirmButton: false,
-                            timer: 3000,
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Cliente no encontrado",
-                            text: data.message || "No se pudo encontrar al cliente.",
-                            toast: true,
-                            position: "top-right",
-                            showConfirmButton: false,
-                            timer: 3000,
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error al realizar la solicitud:", error);
-
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error en la solicitud",
-                        text: "Hubo un problema al realizar la búsqueda del cliente.",
-                        toast: true,
-                        position: "top-right",
-                        showConfirmButton: false,
-                        timer: 3000,
-                    });
-                });
-        } else {
-            Swal.fire({
-                icon: "warning",
-                title: "Campo vacío",
-                text: "Por favor, ingresa un número de DNI.",
-                toast: true,
-                position: "top-right",
-                showConfirmButton: false,
-                timer: 3000,
-            });
-        }
-    }
-});
-
-    
-    </script>
 <script>
-document.addEventListener("click", function (event) {
-    if (event.target.classList.contains("buscar-cliente-btn")) {
-        const section = event.target.closest(".card-body"); // Encuentra la sección contenedora
-        const dniInput = section.querySelector("input[id='numero_documento_destinatario']"); // Input del DNI
-        const razonSocialInput = section.querySelector("input[id='razon_social_destinatario']");
-        const documentoIdInput = section.querySelector("input[id='documento_id_destinatario']");
-        const direccionInput = section.querySelector("input[id='direccion_destinatario']");
-        const idDestinatarioInput = section.querySelector("input[id='id_destinatario']"); // Input oculto para el ID del cliente
+    document.getElementById("buscarClienteEmpresaBtn").addEventListener("click", function(event) {
+        event.preventDefault(); // Evita que el formulario se envíe
 
-        const dni = dniInput.value.trim();
+        const numeroDocumento = document.getElementById("numero_documento_empresa").value.trim();
 
-        if (dni) {
-            fetch(`/buscar-cliente?dni=${dni}`)
-                .then((response) => response.json())
-                .then((data) => {
+        if (numeroDocumento) {
+            fetch(`/buscar-cliente?dni=${numeroDocumento}`)
+                .then(response => response.json())
+                .then(data => {
                     if (data.success) {
-                        // Si el cliente es encontrado, llenamos los campos del formulario
                         const cliente = data.data;
-                        razonSocialInput.value = cliente.nombre;
-                        documentoIdInput.value = cliente.tipo_documento;
-                        direccionInput.value = cliente.direccion;
-                        idDestinatarioInput.value = cliente.id; // Asignar el ID del cliente al input oculto
+                        document.getElementById("id_empresa").value = cliente.id;
+                        document.getElementById("razon_social_empresa").value = cliente.nombre;
+                        document.getElementById("documento_id_empresa").value = cliente.tipo_documento;
+                        document.getElementById("direccion_empresa").value = cliente.direccion;
 
                         // Mostrar mensaje de éxito
                         Swal.fire({
-                            icon: "success",
-                            title: "Cliente encontrado",
-                            text: "Los datos del cliente se han completado exitosamente.",
+                            icon: 'success',
+                            title: 'Cliente encontrado',
+                            text: 'Los datos del cliente se han completado.',
                             toast: true,
-                            position: "top-right",
+                            position: 'top-right',
                             showConfirmButton: false,
-                            timer: 3000,
+                            timer: 3000
                         });
                     } else {
                         Swal.fire({
-                            icon: "error",
-                            title: "Cliente no encontrado",
-                            text: data.message || "No se pudo encontrar al cliente.",
+                            icon: 'error',
+                            title: 'Cliente no encontrado',
+                            text: 'No se pudo encontrar al cliente. Se abrirá el formulario de creación.',
                             toast: true,
-                            position: "top-right",
+                            position: 'top-right',
                             showConfirmButton: false,
-                            timer: 3000,
+                            timer: 3000
                         });
+
+                        // Abrir modal automáticamente
+                        document.getElementById("modal_numero_documento").value = numeroDocumento;
+                        document.getElementById("tipo_persona").value = "natural";
+                        const clienteModal = new bootstrap.Modal(document.getElementById('clienteModal'));
+                        clienteModal.show();
                     }
                 })
-                .catch((error) => {
-                    console.error("Error al realizar la solicitud:", error);
-
+                .catch(error => {
                     Swal.fire({
-                        icon: "error",
-                        title: "Error en la solicitud",
-                        text: "Hubo un problema al realizar la búsqueda del cliente.",
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema al buscar el cliente.',
                         toast: true,
-                        position: "top-right",
+                        position: 'top-right',
                         showConfirmButton: false,
-                        timer: 3000,
+                        timer: 3000
                     });
                 });
         } else {
             Swal.fire({
-                icon: "warning",
-                title: "Campo vacío",
-                text: "Por favor, ingresa un número de DNI.",
+                icon: 'warning',
+                title: 'Campo vacío',
+                text: 'Por favor ingrese un número de documento.',
                 toast: true,
-                position: "top-right",
+                position: 'top-right',
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 3000
             });
         }
-    }
-});
+    });
 </script>
     
 @endsection

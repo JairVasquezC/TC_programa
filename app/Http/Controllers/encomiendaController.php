@@ -8,6 +8,7 @@ use App\Models\Cliente;
 use App\Models\Documento;
 use App\Models\Viaje;
 use App\Models\Paquete;
+use Illuminate\Support\Facades\Log;
 
 class encomiendaController extends Controller
 {
@@ -39,14 +40,33 @@ class encomiendaController extends Controller
      */
     public function store(Request $request)
     {
-        // Crear la encomienda
-    $encomienda = Encomienda::create([
-        'estado_envio' => $request->estado_envio,
-        'id_remitente' => $request->id_remitente,
-        'id_destinatario' => $request->id_destinatario,
-        'id_viaje' => $request->id_viaje,
-        'costo_total' => $request->costo_total, // Guardamos el costo total
-    ]);
+
+        Log::info('Datos recibidos:', $request->all());
+
+        // Validar los datos recibidos
+        $validated = $request->validate([
+            //'tipo_cliente' => 'required|string|in:natural,juridica',
+            'id_remitente' => 'required|integer',
+            'id_destinatario' => 'required|integer',
+            'viaje_id' => 'required|integer',
+            'costo_total' => 'required|numeric|min:0',
+            'fecha_registro' => 'required|date',
+            'estado_envio' => 'required|string',
+        ]);
+    
+        // Determinar el valor de id_empresa
+        //$id_empresa = $request->tipo_cliente === 'natural' ? null : $request->id_empresa;
+    
+        // Crear el registro
+        $encomienda = new Encomienda();
+        $encomienda->id_viaje = $validated['viaje_id'];
+        $encomienda->id_remitente = $validated['id_remitente'];
+        $encomienda->id_destinatario = $validated['id_destinatario'];
+        $encomienda->costo_total = $validated['costo_total'];
+        $encomienda->fecha_registro = $validated['fecha_registro'];
+        $encomienda->estado_envio = $validated['estado_envio'];
+        $encomienda->id_empresa = "6"; // Null si tipo_cliente es natural
+        $encomienda->save();
 
     // Verificar si hay paquetes y almacenarlos
     $paquetes = $request->input('paquetes');

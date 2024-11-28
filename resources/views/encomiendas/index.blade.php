@@ -54,7 +54,7 @@
                         <td>{{ $encomienda->destinatario->persona->razon_social ?? 'No asignado' }}</td>
                         <td>{{ $encomienda->costo_total }}</td>
                         <td>{{ $encomienda->estado_envio ?? 'No definido' }}</td>
-                        <td>{{ $encomienda->empresa->nombre ?? 'No asignada' }}</td>
+                        <td>{{ $encomienda->empresa->persona->razon_social ?? 'No asignada' }}</td>
                         <td>
                             <div class="d-flex justify-content-around">
                                 @can('editar-encomienda')
