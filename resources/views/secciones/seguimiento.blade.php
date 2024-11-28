@@ -59,10 +59,12 @@
     <div id="resultadoPedido" class="d-none bg-white shadow rounded p-4">
         <h4 class="text-danger fw-bold">Estado del Envío</h4>
         <p id="descripcionPedido" class="text-muted"></p>
+        <p id="fechaRegistro" class="text-muted"></p> <!-- Fecha de registro -->
+    
         <div class="position-relative d-flex justify-content-between align-items-center mt-4">
             <!-- Línea de progreso -->
             <div class="position-absolute top-50 start-0 w-100 bg-danger" style="height: 4px; z-index: -1;"></div>
-            
+    
             <!-- Estados -->
             @foreach ($estadosEnvio as $estado)
             <div class="text-center flex-grow-1">
@@ -84,45 +86,58 @@
   </div>
   
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const pedidosFicticios = @json($pedidosFicticios);
-        const estadosEnvio = @json($estadosEnvio);
+document.addEventListener('DOMContentLoaded', () => {
+    const codigoInput = document.getElementById('codigo');
+    const dniInput = document.getElementById('dni');
+    const buscarBtn = document.getElementById('buscarPedido');
+    const errorMensaje = document.getElementById('errorMensaje');
+    const resultadoPedido = document.getElementById('resultadoPedido');
+    const descripcionPedido = document.getElementById('descripcionPedido');
+    const fechaRegistro = document.getElementById('fechaRegistro'); // Para mostrar la fecha de registro
 
-        const codigoInput = document.getElementById('codigo');
-        const dniInput = document.getElementById('dni');
-        const buscarBtn = document.getElementById('buscarPedido');
-        const errorMensaje = document.getElementById('errorMensaje');
-        const resultadoPedido = document.getElementById('resultadoPedido');
-        const descripcionPedido = document.getElementById('descripcionPedido');
+    buscarBtn.addEventListener('click', async () => {
+        const codigo = codigoInput.value.trim();
+        const dni = dniInput.value.trim();
 
-        buscarBtn.addEventListener('click', () => {
-            const codigo = codigoInput.value.trim();
-            const dni = dniInput.value.trim();
+        // Realiza la solicitud AJAX
+        const response = await fetch(`/buscar-pedido?codigo=${codigo}&dni=${dni}`);
+        const data = await response.json();
 
-            const pedido = pedidosFicticios.find(p => p.codigo === codigo && p.dni === dni);
+        if (data.success) {
+            // Mostrar detalles del pedido
+            errorMensaje.classList.add('d-none');
+            resultadoPedido.classList.remove('d-none');
+            descripcionPedido.textContent = `Estado actual: ${data.estadoEnvio}`;
+            fechaRegistro.textContent = `Fecha de Registro: ${data.fecha_registro}`;
 
-            if (pedido) {
-                // Mostrar detalles del pedido
-                errorMensaje.classList.add('d-none');
-                resultadoPedido.classList.remove('d-none');
-                descripcionPedido.textContent = pedido.descripcion;
+            // Actualizar el estado visual
+            const estadosEnvio = @json($estadosEnvio); // Trae los estados de PHP
+            estadosEnvio.forEach(estado => {
+                const estadoDiv = document.getElementById(`estado-${estado.id}`);
 
-                // Actualizar el estado visual
-                estadosEnvio.forEach(estado => {
-                    const estadoDiv = document.getElementById(`estado-${estado.id}`);
-                    if (estado.id <= pedido.estadoActual) {
-                        estadoDiv.style.backgroundColor = '#dc3545'; // Rojo para completados
-                    } else {
-                        estadoDiv.style.backgroundColor = '#ddd'; // Gris para pendientes
-                    }
-                });
-            } else {
-                // Mostrar mensaje de error
-                errorMensaje.classList.remove('d-none');
-                resultadoPedido.classList.add('d-none');
-            }
-        });
+                // Verificar si el estado es alcanzado o completado
+                if (estado.nombre === data.estadoEnvio) {
+                    // Cambiar el color de los íconos hasta el estado actual
+                    estadoDiv.style.backgroundColor = '#dc3545'; // Rojo para completados
+                    estadoDiv.querySelector('img').style.opacity = '1'; // Asegurar que la imagen sea visible
+                } else if (estado.nombre !== data.estadoEnvio && estado.id < data.estadoEnvio) {
+                    // Colorear los iconos anteriores (estados previos)
+                    estadoDiv.style.backgroundColor = '#dc3545'; // Rojo para completados
+                    estadoDiv.querySelector('img').style.opacity = '1'; // Asegurar que la imagen sea visible
+                } else {
+                    // Los íconos futuros se mantienen en gris
+                    estadoDiv.style.backgroundColor = '#ddd'; // Gris para pendientes
+                    estadoDiv.querySelector('img').style.opacity = '0.5'; // Reducir la opacidad de los íconos futuros
+                }
+            });
+        } else {
+            // Mostrar mensaje de error
+            errorMensaje.classList.remove('d-none');
+            resultadoPedido.classList.add('d-none');
+        }
     });
+});
+
 </script>
 <script src="vendors/@popperjs/popper.min.js"></script>
   <script src="vendors/bootstrap/bootstrap.min.js"></script>

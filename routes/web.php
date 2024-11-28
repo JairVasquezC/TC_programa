@@ -49,9 +49,8 @@ Route::get('/nosotros', function () {
     return view('secciones.nosotros');
 });
 
-Route::get('/seguimientos', [SeguimientoController::class, 'index'])->name('seguimientos');
-
-// Route::post('/chat', [ChatBotController::class, 'index']);
+Route::get('/seguimientos', action: [SeguimientoController::class, 'index'])->name('seguimientos');
+Route::get('/buscar-pedido', [SeguimientoController::class, 'buscarPedido'])->name('buscar.pedido');// Route::post('/chat', [ChatBotController::class, 'index']);
 
 
 
