@@ -57,6 +57,22 @@ class clienteController extends Controller
         return redirect()->route('clientes.index')->with('success', 'Cliente registrado');
     }
 
+    public function store1(StorePersonaRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            $persona = Persona::create($request->validated());
+            $persona->cliente()->create([
+                'persona_id' => $persona->id
+            ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+
+        return redirect()->route('ventas_pasajes.create')->with('success', 'Cliente registrado');
+    }
+
     /**
      * Display the specified resource.
      */
