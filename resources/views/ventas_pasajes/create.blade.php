@@ -52,7 +52,7 @@
             <div class="card-body text-bg-light">
                 <!-- Sección: Datos del Cliente Natural -->
                 <div id="cliente-natural-section">
-                    <h4>Datos del Cliente Natural</h4>
+                    <h4>Datos del Cliente</h4>
                     <div class="row g-3">
                         <div class="col-md-12">
                             <label for="numero_documento_input" class="form-label">Número de Documento:</label>
@@ -67,7 +67,7 @@
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>            
-                        <div class="col-12">
+                        <div class="col-md-6">
                             <label for="razon_social" class="form-label">Nombres y apellidos:</label>
                             <input type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}" required readonly>
                             @error('razon_social')
@@ -81,13 +81,6 @@
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
-                        <div class="col-md-6">
-                            <label for="numero_documento" class="form-label">Número de documento:</label>
-                            <input type="text" name="numero_documento" id="numero_documento" class="form-control" value="{{ old('numero_documento') }}" required readonly>
-                            @error('numero_documento')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
                         <div class="col-md-12">
                             <label for="direccion" class="form-label">Dirección:</label>
                             <input type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion') }}" required readonly>
@@ -97,37 +90,44 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             
             <div class="card-body text-bg-light">
                 <!-- Sección: Datos del Cliente Jurídico (Empresa) -->
                 <div id="cliente-juridico-section">
-                    <h4>Datos de la Empresa (Cliente Jurídico)</h4>
+                    <h4>Datos de la Empresa</h4>
                     <div class="row g-3">
-                        <!-- Datos de la empresa -->
+                        <div class="col-md-12">
+                            <label for="numero_documento_input_empresa" class="form-label">Número de Documento:</label>
+                            <div class="input-group">
+                                <input type="text" id="numero_documento_input_empresa" class="form-control" placeholder="Ingresar RUC">
+                                <button class="btn btn-primary" id="buscarEmpresaBtn">Buscar Empresa</button>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#empresaModal">
+                                    Crear Empresa
+                                </button>
+                            </div>
+                            @error('numero_documento')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                            @enderror
+                        </div>            
                         <div class="col-md-6">
-                            <label for="empresa_razon_social" class="form-label">Razón social de la empresa:</label>
-                            <input type="text" name="empresa_razon_social" id="empresa_razon_social" class="form-control" value="{{ old('empresa_razon_social') }}" required>
-                            @error('empresa_razon_social')
+                            <label for="razon_social" class="form-label">Razón Social:</label>
+                            <input type="text" name="razon_social" id="razon_social_empresa" class="form-control" value="{{ old('razon_social') }}" required readonly>
+                            @error('razon_social')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
                         <div class="col-md-6">
-                            <label for="ruc_empresa" class="form-label">RUC de la empresa:</label>
-                            <input type="text" name="ruc_empresa" id="ruc_empresa" class="form-control" value="{{ old('ruc_empresa') }}" required>
-                            @error('ruc_empresa')
+                            <label for="documento_id" class="form-label">Tipo de documento:</label>
+                            <input type="text" name="documento_id" id="documento_id_empresa" class="form-control" value="{{ old('tipo_documento') }}" required readonly>
+                            @error('documento_id')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
-                    </div>
-
-                    <!-- Datos de la persona que hace el trámite (Cliente natural) -->
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label for="persona_tramite" class="form-label">Nombre de la persona que realiza el trámite:</label>
-                            <input type="text" name="persona_tramite" id="persona_tramite" class="form-control" value="{{ old('persona_tramite') }}" required>
-                            @error('persona_tramite')
+                        <div class="col-md-12">
+                            <label for="direccion" class="form-label">Dirección:</label>
+                            <input type="text" name="direccion" id="direccion_empresa" class="form-control" value="{{ old('direccion') }}" required readonly>
+                            @error('direccion')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
                         </div>
@@ -193,14 +193,14 @@
 
     <!-- Modal -->
 <!-- Modal para crear un cliente -->
-    <div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
+<div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="clienteModalLabel">Crear Cliente</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form id="crearClienteForm" method="POST" action="{{ route('clientes.store') }}">
+        <form id="crearClienteForm" method="POST" action="{{ route('clientes.store1') }}">
             @csrf
             <div class="modal-body">
             <div class="card-body text-bg-light">
@@ -270,8 +270,6 @@
         </div>
     </div>
     </div>
-
-
 </div>
 
 @endsection
@@ -337,7 +335,6 @@ document.getElementById("buscarClienteBtn").addEventListener("click", function(e
                     const cliente = data.data;
                     document.getElementById("razon_social").value = cliente.nombre; // Nombres y apellidos
                     document.getElementById("documento_id").value = cliente.tipo_documento; // Tipo de documento
-                    document.getElementById("numero_documento").value = cliente.numero_documento; // Número de documento
                     document.getElementById("direccion").value = cliente.direccion; // Dirección
 
                     // Mostrar mensaje de éxito con SweetAlert2 (Toast)
@@ -381,7 +378,68 @@ document.getElementById("buscarClienteBtn").addEventListener("click", function(e
         alert("Por favor ingrese un número de DNI.");
     }
 });
+</script>
 
+<script>
+document.getElementById("buscarEmpresaBtn").addEventListener("click", function(event) {
+    event.preventDefault();  // Evita que el formulario se envíe y recargue la página
+
+    const dni = document.getElementById("numero_documento_input_empresa").value.trim(); // Obtenemos el DNI ingresado
+
+    if (dni) {
+        fetch(`/buscar-cliente?dni=${dni}`)
+            .then(response => response.json()) // Convertimos la respuesta a JSON
+            .then(data => {
+                console.log(data);  // Muestra la data de la respuesta en la consola
+
+                if (data.success) {
+                    // Si el cliente es encontrado, llenamos los campos del formulario
+                    const cliente = data.data;
+                    document.getElementById("razon_social_empresa").value = cliente.nombre; // Nombres y apellidos
+                    document.getElementById("documento_id_empresa").value = cliente.tipo_documento; // Tipo de documento
+                    document.getElementById("direccion_empresa").value = cliente.direccion; // Dirección
+
+                    // Mostrar mensaje de éxito con SweetAlert2 (Toast)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cliente encontrado',
+                        text: 'Los datos del cliente se han completado exitosamente.',
+                        toast: true,
+                        position: 'top-right',  // Ubicación del toast
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                } else {
+                    // Mostrar mensaje de error con SweetAlert2 (Toast)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Cliente no encontrado',
+                        text: data.message || 'No se pudo encontrar al cliente.',
+                        toast: true,
+                        position: 'top-right',  // Ubicación del toast
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al realizar la solicitud:', error);
+
+                // Mostrar mensaje de error con SweetAlert2 en caso de fallo de la solicitud
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error en la solicitud',
+                    text: 'Hubo un problema al realizar la búsqueda del cliente.',
+                    toast: true,
+                    position: 'top-right',  // Ubicación del toast
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+    } else {
+        alert("Por favor ingrese un número de DNI.");
+    }
+});
 
 </script>
 
