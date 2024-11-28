@@ -43,7 +43,6 @@
                         <th>Destinatario</th>
                         <th>Costo Total</th>
                         <th>Estado</th>
-                        <th>Fecha Creación</th>
                         <th>Empresa</th>
                         <th>Acciones</th>
                     </tr>
@@ -51,11 +50,10 @@
                 <tbody>
                     @foreach($encomiendas as $encomienda)
                     <tr>
-                        <td>{{ $encomienda->remitente->nombre ?? 'No asignado' }}</td>
-                        <td>{{ $encomienda->destinatario->nombre ?? 'No asignado' }}</td>
+                        <td>{{ $encomienda->remitente->persona->razon_social ?? 'No asignado' }}</td>
+                        <td>{{ $encomienda->destinatario->persona->razon_social ?? 'No asignado' }}</td>
                         <td>{{ $encomienda->costo_total }}</td>
                         <td>{{ $encomienda->estado_envio ?? 'No definido' }}</td>
-                        <td>{{ $encomienda->created_at->format('d/m/Y') }}</td>
                         <td>{{ $encomienda->empresa->nombre ?? 'No asignada' }}</td>
                         <td>
                             <div class="d-flex justify-content-around">

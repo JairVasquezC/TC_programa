@@ -30,7 +30,7 @@ class encomiendaController extends Controller
         $clientes = Cliente::with('persona')->get();
         $viajes = Viaje::all();
         $documentos = Documento::all();
-        return view('ventas_pasajes.create', compact('viajes', 'clientes','documentos'));
+        return view('encomiendas.create', compact('viajes', 'clientes','documentos'));
 
     }
 
@@ -39,30 +39,31 @@ class encomiendaController extends Controller
      */
     public function store(Request $request)
     {
-        //
-       /*  $validatedData = $request->validate([
-            'costo_total' => 'required|numeric',
-            'estado_envio' => 'nullable|string|max:15',
-            'id_remitente' => 'required|exists:clientes,id',
-            'id_destinatario' => 'required|exists:clientes,id',
-            'id_viaje' => 'nullable|exists:viajes,id',
-            'id_empresa' => 'nullable|exists:clientes,id',
-        ]);
- */
-/*         Encomienda::create($validatedData);
+        // Crear la encomienda
+    $encomienda = Encomienda::create([
+        'estado_envio' => $request->estado_envio,
+        'id_remitente' => $request->id_remitente,
+        'id_destinatario' => $request->id_destinatario,
+        'id_viaje' => $request->id_viaje,
+        'costo_total' => $request->costo_total, // Guardamos el costo total
+    ]);
 
-        return redirect()->route('encomiendas.index')->with('success', 'Encomienda creada con éxito');
-
- */
-        $encomienda = Encomienda::create($request->only(['fecha_registro', 'estado_envio', 'cliente_id', 'viaje_id']));
-
-        // Procesar paquetes
-        $paquetes = $request->input('paquetes'); // JSON o array
+    // Verificar si hay paquetes y almacenarlos
+    $paquetes = $request->input('paquetes');
+    if (!empty($paquetes)) {
         foreach ($paquetes as $paquete) {
-            $encomienda->paquetes()->create($paquete);
+            $encomienda->paquetes()->create([
+                'descripcion' => $paquete['descripcion'],
+                'dimension_ancho' => $paquete['dimension_ancho'],
+                'dimension_largo' => $paquete['dimension_largo'],
+                'dimension_grosor' => $paquete['dimension_grosor'],
+                'peso' => $paquete['peso'],
+                'costo' => $paquete['peso'] * 10, // Ejemplo de costo
+            ]);
         }
-    
-        return redirect()->route('encomiendas.index')->with('success', 'Encomienda registrada correctamente.');
+    }
+
+    return redirect()->route('encomiendas.index')->with('success', 'Encomienda registrada correctamente.');
 
     }
 

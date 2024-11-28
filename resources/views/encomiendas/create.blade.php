@@ -1,390 +1,438 @@
 @extends('layouts.app')
 
-@section('title', 'Crear Venta de Pasaje')
-
-@push('css')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<style>
-    /* Escondemos las secciones de cliente y empresa */
-    #cliente-natural-section, #cliente-juridico-section, #venta-pasaje-section {
-        display: none;
-    }
-</style>
-@endpush
-
 @section('content')
-<div class="container-fluid px-4">
-    <h1 class="mt-4 text-center">Crear Venta de Pasaje</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ route('panel') }}">Inicio</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('ventas_pasajes.index') }}">Ventas de Pasajes</a></li>
-        <li class="breadcrumb-item active">Crear Venta</li>
-    </ol>
-
-    <div class="card">
-        <form action="{{ route('ventas_pasajes.store') }}" method="post">
-            @csrf
-            <div class="card-body text-bg-light">
-                <div class="row g-4">
-                    <!-- Sección 1: Selección del tipo de cliente (radio buttons) -->
-                    <div class="col-md-6">
-                        <label class="form-label">Tipo de Cliente:</label>
-                        
-                        <!-- Radio buttons para seleccionar el tipo de cliente -->
-                        <div class="form-check">
-                            <input type="radio" name="tipo_cliente" id="tipo_cliente_natural" value="natural" class="form-check-input" 
-                                {{ old('tipo_cliente') == 'natural' ? 'checked' : '' }} onchange="toggleClientSections()">
-                            <label for="tipo_cliente_natural" class="form-check-label">Cliente Natural</label>
-                        </div>
-                        <div class="form-check">
-                            <input type="radio" name="tipo_cliente" id="tipo_cliente_juridica" value="juridica" class="form-check-input"
-                                {{ old('tipo_cliente') == 'juridica' ? 'checked' : '' }} onchange="toggleClientSections()">
-                            <label for="tipo_cliente_juridica" class="form-check-label">Cliente Jurídico</label>
-                        </div>
-                        
-                        @error('tipo_cliente')
-                            <small class="text-danger">{{ '*' . $message }}</small>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card-body text-bg-light">
-                <!-- Sección: Datos del Cliente Natural -->
-                <div id="cliente-natural-section">
-                    <h4>Datos del Cliente Natural</h4>
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <label for="numero_documento_input" class="form-label">Número de Documento:</label>
-                            <div class="input-group">
-                                <input type="text" id="numero_documento_input" class="form-control" placeholder="Ingresar DNI">
-                                <button class="btn btn-primary" id="buscarClienteBtn">Buscar Cliente</button>
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clienteModal">
-                                    Crear Cliente
-                                </button>
-                            </div>
-                            @error('numero_documento')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>            
-                        <div class="col-12">
-                            <label for="razon_social" class="form-label">Nombres y apellidos:</label>
-                            <input type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}" required readonly>
-                            @error('razon_social')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label for="documento_id" class="form-label">Tipo de documento:</label>
-                            <input type="text" name="documento_id" id="documento_id" class="form-control" value="{{ old('tipo_documento') }}" required readonly>
-                            @error('documento_id')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label for="numero_documento" class="form-label">Número de documento:</label>
-                            <input type="text" name="numero_documento" id="numero_documento" class="form-control" value="{{ old('numero_documento') }}" required readonly>
-                            @error('numero_documento')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="col-md-12">
-                            <label for="direccion" class="form-label">Dirección:</label>
-                            <input type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion') }}" required readonly>
-                            @error('direccion')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            
-            <div class="card-body text-bg-light">
-                <!-- Sección: Datos del Cliente Jurídico (Empresa) -->
-                <div id="cliente-juridico-section">
-                    <h4>Datos de la Empresa (Cliente Jurídico)</h4>
-                    <div class="row g-3">
-                        <!-- Datos de la empresa -->
-                        <div class="col-md-6">
-                            <label for="empresa_razon_social" class="form-label">Razón social de la empresa:</label>
-                            <input type="text" name="empresa_razon_social" id="empresa_razon_social" class="form-control" value="{{ old('empresa_razon_social') }}" required>
-                            @error('empresa_razon_social')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label for="ruc_empresa" class="form-label">RUC de la empresa:</label>
-                            <input type="text" name="ruc_empresa" id="ruc_empresa" class="form-control" value="{{ old('ruc_empresa') }}" required>
-                            @error('ruc_empresa')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Datos de la persona que hace el trámite (Cliente natural) -->
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label for="persona_tramite" class="form-label">Nombre de la persona que realiza el trámite:</label>
-                            <input type="text" name="persona_tramite" id="persona_tramite" class="form-control" value="{{ old('persona_tramite') }}" required>
-                            @error('persona_tramite')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body text-bg-light">
-                <!-- Sección: Atributos de la Venta de Pasaje -->
-                <div id="venta-pasaje-section">
-                    <h4>Datos de la Venta del Pasaje</h4>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="viaje_id" class="form-label">Viaje:</label>
-                            <select name="viaje_id" id="viaje_id" class="form-control">
-                                <option value="">Seleccionar viaje</option>
-                                @foreach($viajes as $viaje)
-                                    <option value="{{ $viaje->id }}" {{ old('viaje_id') == $viaje->id ? 'selected' : '' }}>
-                                        {{ $viaje->fecha }} - {{ $viaje->hora }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('viaje_id')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label for="costo" class="form-label">Costo:</label>
-                            <input type="number" name="costo" id="costo" class="form-control" value="{{ old('costo') }}" required>
-                            @error('costo')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label for="fecha_venta" class="form-label">Fecha de Venta:</label>
-                            <input type="date" name="fecha_venta" id="fecha_venta" class="form-control" value="{{ old('fecha_venta') }}" required>
-                            @error('fecha_venta')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label for="estado" class="form-label">Estado de pago:</label>
-                            <select name="estado" id="estado" class="form-control">
-                                <option value="">Seleccionar estado</option>
-                                <option value="credito" {{ old('estado') == 'credito' ? 'selected' : '' }}>Crédito</option>
-                                <option value="efectivo" {{ old('estado') == 'efectivo' ? 'selected' : '' }}>Efectivo</option>
-                                <option value="transferencia" {{ old('estado') == 'transferencia' ? 'selected' : '' }}>Transferencia</option>
-                                <option value="yape_plin" {{ old('estado') == 'yape_plin' ? 'selected' : '' }}>Yape/Plin</option>
-                            </select>
-                            @error('estado')
-                                <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-footer text-center">
-                <button type="submit" class="btn btn-primary">Crear Venta</button>
-                <button type="reset" class="btn btn-secondary">Reiniciar</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Modal -->
-<!-- Modal para crear un cliente -->
-    <div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="clienteModalLabel">Crear Cliente</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="crearClienteForm" method="POST" action="{{ route('clientes.store') }}">
-            @csrf
-            <div class="modal-body">
-            <div class="card-body text-bg-light">
-                <div class="row g-3">
-
-                <!-- Tipo de persona -->
+    <div class="container-fluid px-4">
+        <h1 class="mt-4 text-center">Registrar Encomienda</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="{{ route('panel') }}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('ventas_pasajes.index') }}">Encomiendas</a></li>
+            <li class="breadcrumb-item active">Registrar Encomienda</li>
+        </ol>
+    
+        <div class="card">
+    <!-- Formulario -->
+    <form id="encomiendaForm" method="POST" action="{{ route('encomiendas.store') }}">
+        @csrf
+        
+        <!-- Fecha y Estado de Envío -->
+        <div class="card-body text-bg-light">
+            <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="tipo_persona" class="form-label">Tipo de cliente:</label>
-                    <select class="form-select" name="tipo_persona" id="tipo_persona">
-                        <option value="" disabled>Seleccione una opción</option>
-                        <option value="natural" selected>Persona natural</option>
-                        <option value="juridica" {{ old('tipo_persona') == 'juridica' ? 'selected' : '' }}>Persona jurídica</option>
+                    <label for="fecha_registro" class="form-label">Fecha de Registro</label>
+                    <input type="date" id="fecha_registro" name="fecha_registro" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="estado_envio" class="form-label">Estado de Envío</label>
+                    <select id="estado_envio" name="estado_envio" class="form-control" required>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Enviado">Enviado</option>
+                        <option value="Entregado">Entregado</option>
                     </select>
-                    @error('tipo_persona')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
                 </div>
+            </div>
+        </div>
 
-                <!-- Razón social -->
-                <div class="col-12" id="box-razon-social">
-                    <label id="label-natural" for="razon_social" class="form-label">Nombres y apellidos:</label>
-                    <input required type="text" name="razon_social" id="razon_social" class="form-control" value="{{old('razon_social')}}">
-                    @error('razon_social')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
+        <!-- Sección: Datos del Cliente REMITENTE -->
+        <div class="card-body text-bg-light" id="remitente-section">
+            <h4>Datos del Cliente Remitente</h4>
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label for="numero_documento_remitente" class="form-label">Número de Documento:</label>
+                    <div class="input-group">
+                        <input type="text" id="numero_documento_remitente" class="form-control" placeholder="Ingresar DNI">
+                        <button class="btn btn-primary buscar-cliente-btn">Buscar Cliente</button>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clienteModal">
+                            Crear Cliente
+                        </button>
+                    </div>
                 </div>
-
-                <!-- Dirección -->
-                <div class="col-12">
-                    <label for="direccion" class="form-label">Dirección:</label>
-                    <input required type="text" name="direccion" id="direccion" class="form-control" value="{{old('direccion')}}">
-                    @error('direccion')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
-                </div>
-
-                <!-- Documento -->
                 <div class="col-md-6">
-                    <label for="documento_id" class="form-label">Tipo de documento:</label>
-                    <select class="form-select" name="documento_id" id="documento_id">
-                    <option value="" selected disabled>Seleccione una opción</option>
-                    @foreach ($documentos as $item)
-                        <option value="{{$item->id}}" {{ old('documento_id') == $item->id ? 'selected' : '' }}>{{$item->tipo_documento}}</option>
+                    <label for="razon_social_remitente" class="form-label">Nombres y apellidos:</label>
+                    <input type="text" id="razon_social_remitente" class="form-control" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label for="documento_id_remitente" class="form-label">Tipo de documento:</label>
+                    <input type="text" id="documento_id_remitente" class="form-control" readonly>
+                </div>
+                <div class="col-md-12">
+                    <label for="direccion_remitente" class="form-label">Dirección:</label>
+                    <input type="text" id="direccion_remitente" class="form-control" readonly>
+                </div>
+                <!-- Input oculto para el ID del cliente remitente -->
+                <input name="id_remitente" id="id_remitente" value="2">
+            </div>
+        </div>
+
+        <div class="card-body text-bg-light" id="destinatario-section">
+            <h4>Datos del Cliente Destinatario</h4>
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label for="numero_documento_destinatario" class="form-label">Número de Documento:</label>
+                    <div class="input-group">
+                        <input type="text" id="numero_documento_destinatario" class="form-control" placeholder="Ingresar DNI">
+                        <button class="btn btn-primary buscar-cliente-btn">Buscar Cliente</button>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clienteModal">
+                            Crear Cliente
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="razon_social_destinatario" class="form-label">Nombres y apellidos:</label>
+                    <input type="text" id="razon_social_destinatario" class="form-control" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label for="documento_id_destinatario" class="form-label">Tipo de documento:</label>
+                    <input type="text" id="documento_id_destinatario" class="form-control" readonly>
+                </div>
+                <div class="col-md-12">
+                    <label for="direccion_destinatario" class="form-label">Dirección:</label>
+                    <input type="text" id="direccion_destinatario" class="form-control" readonly>
+                </div>
+                <!-- Input oculto para el ID del cliente destinatario -->
+                <input  name="id_destinatario" id="id_destinatario" value="1">
+            </div>
+        </div>
+        
+        <div class="card-body text-bg-light">
+        <!-- Viaje -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label for="viaje_id" class="form-label">Viaje</label>
+                <select id="viaje_id" name="viaje_id" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un viaje</option>
+                    @foreach($viajes as $viaje)
+                        <option value="{{ $viaje->id }}">{{ $viaje->fecha }} - {{ $viaje->hora }}</option>
                     @endforeach
-                    </select>
-                    @error('documento_id')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
-                </div>
-
-                <div class="col-md-6">
-                    <label for="numero_documento" class="form-label">Numero de documento:</label>
-                    <input required type="text" name="numero_documento" id="numero_documento" class="form-control" value="{{old('numero_documento')}}">
-                    @error('numero_documento')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
-                </div>
-
-                </div>
+                </select>
             </div>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            </div>
-        </form>
         </div>
-    </div>
-    </div>
+
+        <div id="paquetes-container">
+            <h4>Agregar Paquetes:</h4>
+            {{-- <label for="paquetes" class="form-label">Paquetes</label> --}}
+            <button type="button" class="btn btn-sm btn-secondary mb-2 my-5" onclick="addPaquete()">Agregar Paquete</button>
+        
+            <!-- Contenedor de los paquetes -->
+            <div class="row mb-3 paquete-entry">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="paquetes[0][descripcion]" placeholder="Descripción" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" name="paquetes[0][dimension_ancho]" placeholder="Ancho (cm)" min="0" step="0.01" onchange="updateTotal()" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" name="paquetes[0][dimension_largo]" placeholder="Largo (cm)" min="0" step="0.01" onchange="updateTotal()" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" name="paquetes[0][dimension_grosor]" placeholder="Grosor (cm)" min="0" step="0.01" onchange="updateTotal()" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" name="paquetes[0][peso]" placeholder="Peso (kg)" min="0" step="0.01" onchange="updateTotal()" required>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-danger" onclick="removePaquete(this)">Eliminar</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <strong>Total: $<span id="totalCosto">0.00</span></strong>
+        </div>
+        
+        <!-- Campo oculto para el total que se enviará al backend -->
+        <input type="hidden" name="costo_total" id="costo_total">
 
 
+        <!-- Botón de Guardar -->
+        <div class="row mt-4">
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-success">Guardar Encomienda</button>
+            </div>
+        </div>
+
+        </div>
+
+
+    </form>
+</div>
+</div>
 </div>
 
-@endsection
-
-@push('js')
 <script>
-    function toggleClientSections() {
-        // Obtener el valor del tipo de cliente seleccionado (radio buttons)
-        const tipoCliente = document.querySelector('input[name="tipo_cliente"]:checked')?.value;
+    let paqueteCount = 1; // Contador para manejar los índices de los paquetes
+
+function addPaquete() {
+    const container = document.getElementById('paquetes-container');
+    const newPaquete = `
+        <div class="row mb-3 paquete-entry">
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="paquetes[${paqueteCount}][descripcion]" placeholder="Descripción" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" name="paquetes[${paqueteCount}][dimension_ancho]" placeholder="Ancho (cm)" min="0" step="0.01" onchange="updateTotal()" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" name="paquetes[${paqueteCount}][dimension_largo]" placeholder="Largo (cm)" min="0" step="0.01" onchange="updateTotal()" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" name="paquetes[${paqueteCount}][dimension_grosor]" placeholder="Grosor (cm)" min="0" step="0.01" onchange="updateTotal()" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" name="paquetes[${paqueteCount}][peso]" placeholder="Peso (kg)" min="0" step="0.01" onchange="updateTotal()" required>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-danger" onclick="removePaquete(this)">Eliminar</button>
+            </div>
+        </div>`;
+    
+    container.insertAdjacentHTML('beforeend', newPaquete);
+    paqueteCount++; // Incrementamos el contador para el siguiente paquete
+}
+
+function removePaquete(button) {
+    button.closest('.paquete-entry').remove();
+    updateTotal(); // Actualizamos el total después de eliminar un paquete
+}
+
+function updateTotal() {
+    let totalCosto = 0;
+
+    // Recorremos todos los paquetes
+    const paquetes = document.querySelectorAll('.paquete-entry');
+    paquetes.forEach((paquete) => {
+        const ancho = parseFloat(paquete.querySelector('[name$="[dimension_ancho]"]').value) || 0;
+        const largo = parseFloat(paquete.querySelector('[name$="[dimension_largo]"]').value) || 0;
+        const grosor = parseFloat(paquete.querySelector('[name$="[dimension_grosor]"]').value) || 0;
+        const peso = parseFloat(paquete.querySelector('[name$="[peso]"]').value) || 0;
         
-        // Ocultar todas las secciones
-        document.getElementById('cliente-natural-section').style.display = 'none';
-        document.getElementById('cliente-juridico-section').style.display = 'none';
-        document.getElementById('venta-pasaje-section').style.display = 'none';
-
-        // Mostrar la sección correspondiente según el tipo de cliente
-        if (tipoCliente === 'natural') {
-            document.getElementById('cliente-natural-section').style.display = 'block';
-        } else if (tipoCliente === 'juridica') {
-            document.getElementById('cliente-juridico-section').style.display = 'block';
-            document.getElementById('cliente-natural-section').style.display = 'block';
-        }
-
-        // Mostrar siempre la sección de venta de pasaje
-        document.getElementById('venta-pasaje-section').style.display = 'block';
-    }
-</script>
-<script>
-    function autoFillClientData() {
-        const clientId = document.getElementById('cliente_id').value;
+        // Calcular el costo del paquete basado en el peso (puedes cambiar esta fórmula)
+        const costo = peso * 10; // Ejemplo: Costo = Peso * 10 (puedes ajustar según tu lógica)
         
-        if (!clientId) return; // Si no hay cliente seleccionado, no hacer nada
+        // Actualizar el costo total
+        totalCosto += costo;
+    });
 
-        // Realizar una solicitud AJAX para obtener los datos del cliente
-        fetch(`/clientes/${clientId}`)
-            .then(response => response.json())
-            .then(data => {
-                // Llenar los campos con la información del cliente
-                document.getElementById('razon_social').value = data.razon_social;
-                document.getElementById('documento_id').value = data.documento_id;
-                document.getElementById('numero_documento').value = data.numero_documento;
-            })
-            .catch(error => {
-                console.error("Error al obtener los datos del cliente:", error);
-            });
-    }
+    // Mostrar el costo total en la interfaz
+    document.getElementById('totalCosto').textContent = totalCosto.toFixed(2);
+
+    // Actualizar el campo oculto que se enviará al backend
+    document.getElementById('costo_total').value = totalCosto.toFixed(2);
+}
+
+
 </script>
-
+{{-- 
 <script>
-document.getElementById("buscarClienteBtn").addEventListener("click", function(event) {
-    event.preventDefault();  // Evita que el formulario se envíe y recargue la página
+    document.getElementById("buscarClienteBtn").addEventListener("click", function(event) {
+    event.preventDefault(); // Evita recargar la página
 
-    const dni = document.getElementById("numero_documento_input").value.trim(); // Obtenemos el DNI ingresado
+    const dni = document.getElementById("numero_documento_input").value.trim();
 
-    if (dni) {
-        fetch(`/buscar-cliente?dni=${dni}`)
-            .then(response => response.json()) // Convertimos la respuesta a JSON
-            .then(data => {
-                console.log(data);  // Muestra la data de la respuesta en la consola
+    if (dni === "") {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Atención',
+            text: 'Por favor, ingresa un número de documento.',
+            toast: true,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        return;
+    }
 
-                if (data.success) {
-                    // Si el cliente es encontrado, llenamos los campos del formulario
-                    const cliente = data.data;
-                    document.getElementById("razon_social").value = cliente.nombre; // Nombres y apellidos
-                    document.getElementById("documento_id").value = cliente.tipo_documento; // Tipo de documento
-                    document.getElementById("numero_documento").value = cliente.numero_documento; // Número de documento
-                    document.getElementById("direccion").value = cliente.direccion; // Dirección
+    fetch(`/buscar-cliente?dni=${dni}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const cliente = data.data;
 
-                    // Mostrar mensaje de éxito con SweetAlert2 (Toast)
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Cliente encontrado',
-                        text: 'Los datos del cliente se han completado exitosamente.',
-                        toast: true,
-                        position: 'top-right',  // Ubicación del toast
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                } else {
-                    // Mostrar mensaje de error con SweetAlert2 (Toast)
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Cliente no encontrado',
-                        text: data.message || 'No se pudo encontrar al cliente.',
-                        toast: true,
-                        position: 'top-right',  // Ubicación del toast
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error al realizar la solicitud:', error);
+                // Llenar los campos
+                document.getElementById("razon_social").value = cliente.nombre;
+                document.getElementById("documento_id").value = cliente.tipo_documento;
+                document.getElementById("direccion").value = cliente.direccion;
 
-                // Mostrar mensaje de error con SweetAlert2 en caso de fallo de la solicitud
+                // Notificar éxito
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error en la solicitud',
-                    text: 'Hubo un problema al realizar la búsqueda del cliente.',
+                    icon: 'success',
+                    title: 'Cliente encontrado',
+                    text: 'Los datos del cliente se han completado exitosamente.',
                     toast: true,
-                    position: 'top-right',  // Ubicación del toast
+                    position: 'top-right',
                     showConfirmButton: false,
                     timer: 3000
                 });
+            } else {
+                throw new Error(data.message || 'No se pudo encontrar al cliente.');
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'Hubo un problema al realizar la búsqueda.',
+                toast: true,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 3000
             });
-    } else {
-        alert("Por favor ingrese un número de DNI.");
+        });
+});
+
+    </script> --}}
+    
+    <script>
+  document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("buscar-cliente-btn")) {
+        const section = event.target.closest(".card-body"); // Encuentra la sección contenedora
+        const dniInput = section.querySelector("input[id='numero_documento_remitente']"); // Input del DNI
+        const razonSocialInput = section.querySelector("input[id='razon_social_remitente']");
+        const documentoIdInput = section.querySelector("input[id='documento_id_remitente']");
+        const direccionInput = section.querySelector("input[id='direccion_remitente']");
+        const idRemitenteInput = section.querySelector("input[id='id_remitente']"); // Input oculto para el ID del cliente
+
+        const dni = dniInput.value.trim();
+
+        if (dni) {
+            fetch(`/buscar-cliente?dni=${dni}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Si el cliente es encontrado, llenamos los campos del formulario
+                        const cliente = data.data;
+                        razonSocialInput.value = cliente.nombre;
+                        documentoIdInput.value = cliente.tipo_documento;
+                        direccionInput.value = cliente.direccion;
+                        idRemitenteInput.value = cliente.id; // Asignar el ID del cliente al input oculto
+
+                        // Mostrar mensaje de éxito
+                        Swal.fire({
+                            icon: "success",
+                            title: "Cliente encontrado",
+                            text: "Los datos del cliente se han completado exitosamente.",
+                            toast: true,
+                            position: "top-right",
+                            showConfirmButton: false,
+                            timer: 3000,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Cliente no encontrado",
+                            text: data.message || "No se pudo encontrar al cliente.",
+                            toast: true,
+                            position: "top-right",
+                            showConfirmButton: false,
+                            timer: 3000,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error al realizar la solicitud:", error);
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error en la solicitud",
+                        text: "Hubo un problema al realizar la búsqueda del cliente.",
+                        toast: true,
+                        position: "top-right",
+                        showConfirmButton: false,
+                        timer: 3000,
+                    });
+                });
+        } else {
+            Swal.fire({
+                icon: "warning",
+                title: "Campo vacío",
+                text: "Por favor, ingresa un número de DNI.",
+                toast: true,
+                position: "top-right",
+                showConfirmButton: false,
+                timer: 3000,
+            });
+        }
     }
 });
 
+    
+    </script>
+<script>
+document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("buscar-cliente-btn")) {
+        const section = event.target.closest(".card-body"); // Encuentra la sección contenedora
+        const dniInput = section.querySelector("input[id='numero_documento_destinatario']"); // Input del DNI
+        const razonSocialInput = section.querySelector("input[id='razon_social_destinatario']");
+        const documentoIdInput = section.querySelector("input[id='documento_id_destinatario']");
+        const direccionInput = section.querySelector("input[id='direccion_destinatario']");
+        const idDestinatarioInput = section.querySelector("input[id='id_destinatario']"); // Input oculto para el ID del cliente
 
+        const dni = dniInput.value.trim();
+
+        if (dni) {
+            fetch(`/buscar-cliente?dni=${dni}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // Si el cliente es encontrado, llenamos los campos del formulario
+                        const cliente = data.data;
+                        razonSocialInput.value = cliente.nombre;
+                        documentoIdInput.value = cliente.tipo_documento;
+                        direccionInput.value = cliente.direccion;
+                        idDestinatarioInput.value = cliente.id; // Asignar el ID del cliente al input oculto
+
+                        // Mostrar mensaje de éxito
+                        Swal.fire({
+                            icon: "success",
+                            title: "Cliente encontrado",
+                            text: "Los datos del cliente se han completado exitosamente.",
+                            toast: true,
+                            position: "top-right",
+                            showConfirmButton: false,
+                            timer: 3000,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Cliente no encontrado",
+                            text: data.message || "No se pudo encontrar al cliente.",
+                            toast: true,
+                            position: "top-right",
+                            showConfirmButton: false,
+                            timer: 3000,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error al realizar la solicitud:", error);
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error en la solicitud",
+                        text: "Hubo un problema al realizar la búsqueda del cliente.",
+                        toast: true,
+                        position: "top-right",
+                        showConfirmButton: false,
+                        timer: 3000,
+                    });
+                });
+        } else {
+            Swal.fire({
+                icon: "warning",
+                title: "Campo vacío",
+                text: "Por favor, ingresa un número de DNI.",
+                toast: true,
+                position: "top-right",
+                showConfirmButton: false,
+                timer: 3000,
+            });
+        }
+    }
+});
 </script>
-
-
-@endpush
-
+    
+@endsection
