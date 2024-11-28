@@ -47,11 +47,11 @@
                     @foreach($ventasPasajes as $venta)
                     <tr>
                         <td>{{ $venta->viaje->fecha }} - {{ $venta->viaje->hora }}</td>
-                        <td>{{ $venta->cliente->nombre }}</td>
+                        <td>{{ $venta->cliente->persona->razon_social }}</td>
                         <td>{{ $venta->costo }}</td>
                         <td>{{ $venta->fecha_venta }}</td>
                         <td>{{ $venta->estado ?? 'No definido' }}</td>
-                        <td>{{ $venta->empresa->nombre ?? 'No asignada' }}</td>
+                        <td>{{ $venta->empresa->persona->razon_social ?? 'No asignada' }}</td>
                         <td>
                             <div class="d-flex justify-content-around">
                                 @can('editar-venta_pasaje')

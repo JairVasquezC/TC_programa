@@ -54,19 +54,19 @@
                 <div id="cliente-natural-section">
                     <h4>Datos del Cliente</h4>
                     <div class="row g-3">
-                        <div class="col-md-12">
-                            <label for="numero_documento_input" class="form-label">Número de Documento:</label>
-                            <div class="input-group">
-                                <input type="text" id="numero_documento_input" class="form-control" placeholder="Ingresar DNI">
-                                <button class="btn btn-primary" id="buscarClienteBtn">Buscar Cliente</button>
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clienteModal">
-                                    Crear Cliente
-                                </button>
-                            </div>
-                            @error('numero_documento')
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="numero_documento_input" class="form-label">Número de Documento:</label>
+                                <div class="input-group">
+                                    <input type="text" id="numero_documento_input" class="form-control" placeholder="Ingresar DNI">
+                                    <button class="btn btn-primary" id="buscarClienteBtn">Completar</button>
+                                </div>
+                                @error('numero_documento')
                                 <small class="text-danger">{{ '*' . $message }}</small>
-                            @enderror
-                        </div>            
+                                @enderror
+                            </div>
+                        </div>        
+                        <input type="hidden" name="id_cliente" id="id_cliente" value="1">
                         <div class="col-md-6">
                             <label for="razon_social" class="form-label">Nombres y apellidos:</label>
                             <input type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}" required readonly>
@@ -98,18 +98,16 @@
                     <h4>Datos de la Empresa</h4>
                     <div class="row g-3">
                         <div class="col-md-12">
-                            <label for="numero_documento_input_empresa" class="form-label">Número de Documento:</label>
+                            <label for="numero_documento_input_empresa" class="form-label">Número de Documento (RUC):</label>
                             <div class="input-group">
                                 <input type="text" id="numero_documento_input_empresa" class="form-control" placeholder="Ingresar RUC">
-                                <button class="btn btn-primary" id="buscarEmpresaBtn">Buscar Empresa</button>
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#empresaModal">
-                                    Crear Empresa
-                                </button>
+                                <button class="btn btn-primary" id="buscarEmpresaBtn">Completar</button>
                             </div>
                             @error('numero_documento')
                                 <small class="text-danger">{{ '*' . $message }}</small>
                             @enderror
-                        </div>            
+                        </div>
+                        <input type="hidden" name="id_empresa" id="id_empresa" value="1">
                         <div class="col-md-6">
                             <label for="razon_social" class="form-label">Razón Social:</label>
                             <input type="text" name="razon_social" id="razon_social_empresa" class="form-control" value="{{ old('razon_social') }}" required readonly>
@@ -196,79 +194,225 @@
 <div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="clienteModalLabel">Crear Cliente</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="crearClienteForm" method="POST" action="{{ route('clientes.store1') }}">
-            @csrf
-            <div class="modal-body">
-            <div class="card-body text-bg-light">
-                <div class="row g-3">
-
-                <!-- Tipo de persona -->
-                <div class="col-md-6">
-                    <label for="tipo_persona" class="form-label">Tipo de cliente:</label>
-                    <select class="form-select" name="tipo_persona" id="tipo_persona">
-                        <option value="" disabled>Seleccione una opción</option>
-                        <option value="natural" selected>Persona natural</option>
-                        <option value="juridica" {{ old('tipo_persona') == 'juridica' ? 'selected' : '' }}>Persona jurídica</option>
-                    </select>
-                    @error('tipo_persona')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
-                </div>
-
-                <!-- Razón social -->
-                <div class="col-12" id="box-razon-social">
-                    <label id="label-natural" for="razon_social" class="form-label">Nombres y apellidos:</label>
-                    <input required type="text" name="razon_social" id="razon_social" class="form-control" value="{{old('razon_social')}}">
-                    @error('razon_social')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
-                </div>
-
-                <!-- Dirección -->
-                <div class="col-12">
-                    <label for="direccion" class="form-label">Dirección:</label>
-                    <input required type="text" name="direccion" id="direccion" class="form-control" value="{{old('direccion')}}">
-                    @error('direccion')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
-                </div>
-
-                <!-- Documento -->
-                <div class="col-md-6">
-                    <label for="documento_id" class="form-label">Tipo de documento:</label>
-                    <select class="form-select" name="documento_id" id="documento_id">
-                    <option value="" selected disabled>Seleccione una opción</option>
-                    @foreach ($documentos as $item)
-                        <option value="{{$item->id}}" {{ old('documento_id') == $item->id ? 'selected' : '' }}>{{$item->tipo_documento}}</option>
-                    @endforeach
-                    </select>
-                    @error('documento_id')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
-                </div>
-
-                <div class="col-md-6">
-                    <label for="numero_documento" class="form-label">Numero de documento:</label>
-                    <input required type="text" name="numero_documento" id="numero_documento" class="form-control" value="{{old('numero_documento')}}">
-                    @error('numero_documento')
-                    <small class="text-danger">{{'*'.$message}}</small>
-                    @enderror
-                </div>
-
-                </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="clienteModalLabel">Crear Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            </div>
-        </form>
+            <form id="crearClienteForm" method="POST" action="{{ route('clientes.store1') }}">
+                @csrf
+                <div class="modal-body">
+                    <div class="card-body text-bg-light">
+                        <div class="row g-3">
+                            <!-- Tipo de persona -->
+                            <div class="col-md-6">
+                                <label for="tipo_persona" class="form-label">Tipo de cliente:</label>
+                                <select class="form-select" name="tipo_persona" id="tipo_persona" readonly>
+                                    <option value="natural" selected>Persona natural</option>
+                                </select>
+                                @error('tipo_persona')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                            <!-- Nombres y apellidos -->
+                            <div class="col-12" id="box-razon-social">
+                                <label id="label-natural" for="razon_social" class="form-label">Nombres y apellidos:</label>
+                                <input required type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}">
+                                @error('razon_social')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                            <!-- Dirección -->
+                            <div class="col-12">
+                                <label for="direccion" class="form-label">Dirección:</label>
+                                <input required type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion') }}">
+                                @error('direccion')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                            <!-- Tipo de documento -->
+                            <div class="col-md-6">
+                                <label for="documento_id" class="form-label">Tipo de documento:</label>
+                                <select class="form-select" name="documento_id" id="documento_id">
+                                    <option value="" selected disabled>Seleccione una opción</option>
+                                    @foreach ($documentos as $item)
+                                        <option value="{{ $item->id }}" {{ old('documento_id') == $item->id ? 'selected' : '' }}>{{ $item->tipo_documento }}</option>
+                                    @endforeach
+                                </select>
+                                @error('documento_id')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                            <!-- Número de documento -->
+                            <div class="col-md-6">
+                                <label for="numero_documento" class="form-label">Número de documento:</label>
+                                <input required type="text" name="numero_documento" id="modal_numero_documento" class="form-control" value="{{ old('numero_documento') }}">
+                                @error('numero_documento')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
+<!-- Modal para crear un cliente -->
+<div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clienteModalLabel">Crear Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="crearClienteForm" method="POST" action="{{ route('clientes.store1') }}">
+                @csrf
+                <div class="modal-body">
+                    <div class="card-body text-bg-light">
+                        <div class="row g-3">
+                            <!-- Tipo de persona -->
+                            <div class="col-md-6">
+                                <label for="tipo_persona" class="form-label">Tipo de cliente:</label>
+                                <select class="form-select" name="tipo_persona" id="tipo_persona" readonly>
+                                    <option value="natural" selected>Persona natural</option>
+                                </select>
+                                @error('tipo_persona')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                            <!-- Nombres y apellidos -->
+                            <div class="col-12" id="box-razon-social">
+                                <label id="label-natural" for="razon_social" class="form-label">Nombres y apellidos:</label>
+                                <input required type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}">
+                                @error('razon_social')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                            <!-- Dirección -->
+                            <div class="col-12">
+                                <label for="direccion" class="form-label">Dirección:</label>
+                                <input required type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion') }}">
+                                @error('direccion')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                            <!-- Tipo de documento -->
+                            <div class="col-md-6">
+                                <label for="documento_id" class="form-label">Tipo de documento:</label>
+                                <select class="form-select" name="documento_id" id="documento_id">
+                                    <option value="" selected disabled>Seleccione una opción</option>
+                                    @foreach ($documentos as $item)
+                                        <option value="{{ $item->id }}" {{ old('documento_id') == $item->id ? 'selected' : '' }}>{{ $item->tipo_documento }}</option>
+                                    @endforeach
+                                </select>
+                                @error('documento_id')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                            <!-- Número de documento -->
+                            <div class="col-md-6">
+                                <label for="numero_documento" class="form-label">Número de documento:</label>
+                                <input required type="text" name="numero_documento" id="modal_numero_documento" class="form-control" value="{{ old('numero_documento') }}">
+                                @error('numero_documento')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para crear una empresa -->
+<div class="modal fade" id="empresaModal" tabindex="-1" aria-labelledby="empresaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="empresaModalLabel">Crear Empresa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="crearEmpresaForm" method="POST" action="{{ route('clientes.store1') }}">
+                @csrf
+                <div class="modal-body">
+                    <div class="card-body text-bg-light">
+                        <div class="row g-3">
+                            <!-- Tipo de persona -->
+                            <div class="col-md-6">
+                                <label for="tipo_persona" class="form-label">Tipo de cliente:</label>
+                                <select class="form-select" name="tipo_persona" id="tipo_persona" readonly>
+                                    <option value="natural" selected>Persona natural</option>
+                                </select>
+                                @error('tipo_persona')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                            <!-- Nombres y apellidos -->
+                            <div class="col-12" id="box-razon-social">
+                                <label id="label-natural" for="razon_social" class="form-label">Nombres y apellidos:</label>
+                                <input required type="text" name="razon_social" id="razon_social" class="form-control" value="{{ old('razon_social') }}">
+                                @error('razon_social')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                            <!-- Dirección -->
+                            <div class="col-12">
+                                <label for="direccion" class="form-label">Dirección:</label>
+                                <input required type="text" name="direccion" id="direccion" class="form-control" value="{{ old('direccion') }}">
+                                @error('direccion')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                            <!-- Tipo de documento -->
+                            <div class="col-md-6">
+                                <label for="documento_id" class="form-label">Tipo de documento:</label>
+                                <select class="form-select" name="documento_id" id="documento_id">
+                                    <option value="" selected disabled>Seleccione una opción</option>
+                                    @foreach ($documentos as $item)
+                                        <option value="{{ $item->id }}" {{ old('documento_id') == $item->id ? 'selected' : '' }}>{{ $item->tipo_documento }}</option>
+                                    @endforeach
+                                </select>
+                                @error('documento_id')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                            <!-- Número de documento -->
+                            <div class="col-md-6">
+                                <label for="numero_documento" class="form-label">Número de documento:</label>
+                                <input required type="text" name="numero_documento" id="modal_numero_documento" class="form-control" value="{{ old('numero_documento') }}">
+                                @error('numero_documento')
+                                <small class="text-danger">{{ '*' . $message }}</small>
+                                @enderror
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -298,103 +442,89 @@
     }
 </script>
 <script>
-    function autoFillClientData() {
-        const clientId = document.getElementById('cliente_id').value;
-        
-        if (!clientId) return; // Si no hay cliente seleccionado, no hacer nada
+    document.getElementById("buscarClienteBtn").addEventListener("click", function(event) {
+        event.preventDefault(); // Evita que el formulario se envíe
 
-        // Realizar una solicitud AJAX para obtener los datos del cliente
-        fetch(`/clientes/${clientId}`)
-            .then(response => response.json())
-            .then(data => {
-                // Llenar los campos con la información del cliente
-                document.getElementById('razon_social').value = data.razon_social;
-                document.getElementById('documento_id').value = data.documento_id;
-                document.getElementById('numero_documento').value = data.numero_documento;
-            })
-            .catch(error => {
-                console.error("Error al obtener los datos del cliente:", error);
-            });
-    }
-</script>
+        const numeroDocumento = document.getElementById("numero_documento_input").value.trim();
 
-<script>
-document.getElementById("buscarClienteBtn").addEventListener("click", function(event) {
-    event.preventDefault();  // Evita que el formulario se envíe y recargue la página
+        if (numeroDocumento) {
+            fetch(`/buscar-cliente?dni=${numeroDocumento}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const cliente = data.data;
+                        document.getElementById("id_cliente").value = cliente.id;
+                        document.getElementById("razon_social").value = cliente.nombre;
+                        document.getElementById("documento_id").value = cliente.tipo_documento;
+                        document.getElementById("direccion").value = cliente.direccion;
 
-    const dni = document.getElementById("numero_documento_input").value.trim(); // Obtenemos el DNI ingresado
+                        // Mostrar mensaje de éxito
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cliente encontrado',
+                            text: 'Los datos del cliente se han completado.',
+                            toast: true,
+                            position: 'top-right',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Cliente no encontrado',
+                            text: 'No se pudo encontrar al cliente. Se abrirá el formulario de creación.',
+                            toast: true,
+                            position: 'top-right',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
 
-    if (dni) {
-        fetch(`/buscar-cliente?dni=${dni}`)
-            .then(response => response.json()) // Convertimos la respuesta a JSON
-            .then(data => {
-                console.log(data);  // Muestra la data de la respuesta en la consola
-
-                if (data.success) {
-                    // Si el cliente es encontrado, llenamos los campos del formulario
-                    const cliente = data.data;
-                    document.getElementById("razon_social").value = cliente.nombre; // Nombres y apellidos
-                    document.getElementById("documento_id").value = cliente.tipo_documento; // Tipo de documento
-                    document.getElementById("direccion").value = cliente.direccion; // Dirección
-
-                    // Mostrar mensaje de éxito con SweetAlert2 (Toast)
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Cliente encontrado',
-                        text: 'Los datos del cliente se han completado exitosamente.',
-                        toast: true,
-                        position: 'top-right',  // Ubicación del toast
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                } else {
-                    // Mostrar mensaje de error con SweetAlert2 (Toast)
+                        // Abrir modal automáticamente
+                        document.getElementById("modal_numero_documento").value = numeroDocumento;
+                        document.getElementById("tipo_persona").value = "natural";
+                        const clienteModal = new bootstrap.Modal(document.getElementById('clienteModal'));
+                        clienteModal.show();
+                    }
+                })
+                .catch(error => {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Cliente no encontrado',
-                        text: data.message || 'No se pudo encontrar al cliente.',
+                        title: 'Error',
+                        text: 'Hubo un problema al buscar el cliente.',
                         toast: true,
-                        position: 'top-right',  // Ubicación del toast
+                        position: 'top-right',
                         showConfirmButton: false,
                         timer: 3000
                     });
-                }
-            })
-            .catch(error => {
-                console.error('Error al realizar la solicitud:', error);
-
-                // Mostrar mensaje de error con SweetAlert2 en caso de fallo de la solicitud
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error en la solicitud',
-                    text: 'Hubo un problema al realizar la búsqueda del cliente.',
-                    toast: true,
-                    position: 'top-right',  // Ubicación del toast
-                    showConfirmButton: false,
-                    timer: 3000
                 });
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campo vacío',
+                text: 'Por favor ingrese un número de documento.',
+                toast: true,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 3000
             });
-    } else {
-        alert("Por favor ingrese un número de DNI.");
-    }
-});
+        }
+    });
 </script>
 
 <script>
 document.getElementById("buscarEmpresaBtn").addEventListener("click", function(event) {
     event.preventDefault();  // Evita que el formulario se envíe y recargue la página
 
-    const dni = document.getElementById("numero_documento_input_empresa").value.trim(); // Obtenemos el DNI ingresado
+    const numeroDocumento  = document.getElementById("numero_documento_input_empresa").value.trim(); // Obtenemos el DNI ingresado
 
-    if (dni) {
-        fetch(`/buscar-cliente?dni=${dni}`)
+    if (numeroDocumento) {
+        fetch(`/buscar-cliente?dni=${numeroDocumento }`)
             .then(response => response.json()) // Convertimos la respuesta a JSON
             .then(data => {
-                console.log(data);  // Muestra la data de la respuesta en la consola
-
                 if (data.success) {
                     // Si el cliente es encontrado, llenamos los campos del formulario
                     const cliente = data.data;
+                    document.getElementById("id_empresa").value = cliente.id;
                     document.getElementById("razon_social_empresa").value = cliente.nombre; // Nombres y apellidos
                     document.getElementById("documento_id_empresa").value = cliente.tipo_documento; // Tipo de documento
                     document.getElementById("direccion_empresa").value = cliente.direccion; // Dirección
@@ -402,8 +532,8 @@ document.getElementById("buscarEmpresaBtn").addEventListener("click", function(e
                     // Mostrar mensaje de éxito con SweetAlert2 (Toast)
                     Swal.fire({
                         icon: 'success',
-                        title: 'Cliente encontrado',
-                        text: 'Los datos del cliente se han completado exitosamente.',
+                        title: 'Empresa encontrada',
+                        text: 'Los datos de la empresa se han completado exitosamente.',
                         toast: true,
                         position: 'top-right',  // Ubicación del toast
                         showConfirmButton: false,
@@ -413,23 +543,28 @@ document.getElementById("buscarEmpresaBtn").addEventListener("click", function(e
                     // Mostrar mensaje de error con SweetAlert2 (Toast)
                     Swal.fire({
                         icon: 'error',
-                        title: 'Cliente no encontrado',
-                        text: data.message || 'No se pudo encontrar al cliente.',
+                        title: 'Empresa no encontrada',
+                        text: data.message || 'No se pudo encontrar a la empresa.',
                         toast: true,
                         position: 'top-right',  // Ubicación del toast
                         showConfirmButton: false,
                         timer: 3000
                     });
+
+                    // Abrir modal automáticamente
+                    document.getElementById("modal_numero_documento").value = numeroDocumento;
+                    document.getElementById("tipo_persona").value = "jurídica";
+                    const empresaModal = new bootstrap.Modal(document.getElementById('empresaModal'));
+                    empresaModal.show();
+
                 }
             })
             .catch(error => {
-                console.error('Error al realizar la solicitud:', error);
-
                 // Mostrar mensaje de error con SweetAlert2 en caso de fallo de la solicitud
                 Swal.fire({
                     icon: 'error',
                     title: 'Error en la solicitud',
-                    text: 'Hubo un problema al realizar la búsqueda del cliente.',
+                    text: 'Hubo un problema al realizar la búsqueda de la empresa.',
                     toast: true,
                     position: 'top-right',  // Ubicación del toast
                     showConfirmButton: false,
@@ -437,7 +572,15 @@ document.getElementById("buscarEmpresaBtn").addEventListener("click", function(e
                 });
             });
     } else {
-        alert("Por favor ingrese un número de DNI.");
+        Swal.fire({
+                icon: 'warning',
+                title: 'Campo vacío',
+                text: 'Por favor ingrese un número de documento.',
+                toast: true,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 3000
+            });
     }
 });
 
