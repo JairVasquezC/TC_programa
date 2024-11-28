@@ -53,7 +53,14 @@
                         <td>{{ $viaje->hora }}</td>
                         <td>{{ $viaje->chofer->name ?? 'Sin chofer' }}</td>
                         <td>{{ $viaje->vehiculo->placa ?? 'Sin vehículo' }}</td>
-                        <td>{{ $viaje->estado ?? 'No definido' }}</td>
+                        <!-- <td>{{ $viaje->estado ?? 'No definido' }}</td> -->
+                        <td>
+                            <select class="form-select form-select-sm actualizar-estado" data-id="{{ $viaje->id }}">
+                                <option value="Viaje Registrado" {{ $viaje->estado == 'Viaje Registrado' ? 'selected' : '' }}>Viaje Registrado</option>
+                                <option value="Viaje en camino" {{ $viaje->estado == 'Viaje en camino' ? 'selected' : '' }}>Viaje en camino</option>
+                                <option value="Viaje Finalizado" {{ $viaje->estado == 'Viaje Finalizado' ? 'selected' : '' }}>Viaje Finalizado</option>
+                            </select>
+                        </td>
                         <td>
                             <div class="d-flex justify-content-around">
                                 @can('editar-viaje')
@@ -107,6 +114,60 @@
         @endif
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Detectar cambio en el select de estado
+        document.querySelectorAll('.actualizar-estado').forEach(select => {
+            select.addEventListener('change', function () {
+                const viajeId = this.getAttribute('data-id'); // Obtener el ID del viaje
+                const nuevoEstado = this.value; // Obtener el nuevo estado seleccionado
+
+                // Enviar solicitud al servidor para actualizar el estado del viaje
+                fetch(`/viajes/${viajeId}/actualizar-estado`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Token CSRF para seguridad
+                    },
+                    body: JSON.stringify({ estado: nuevoEstado }) // Enviar el nuevo estado en el cuerpo
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Mostrar mensaje de éxito
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'Estado del viaje y de las encomiendas actualizado correctamente.',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar'
+                        }).then(() => {
+                            location.reload(); // Recargar la página para reflejar los cambios
+                        });
+                    } else {
+                        // Mostrar mensaje de error si la actualización falla
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo actualizar el estado del viaje.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                })
+                .catch(error => {
+                    // Manejo de errores inesperados
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error inesperado al intentar actualizar el estado.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    console.error('Error:', error); // Mostrar error en la consola para depuración
+                });
+            });
+        });
+    });
+</script>
+
 
 @endpush
 

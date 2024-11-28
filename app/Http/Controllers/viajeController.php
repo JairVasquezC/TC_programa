@@ -64,13 +64,13 @@ class viajeController extends Controller
             'id_chofer' => 'nullable|exists:users,id',
             'id_vehiculo' => 'nullable|exists:vehiculos,id',
         ]);
-    
+
         // Asignar automáticamente el estado "Viaje Registrado"
         $validated['estado'] = 'Viaje Registrado';
-    
+
         // Crear el viaje
         Viaje::create($validated);
-    
+
         return redirect()->route('viajes.index')->with('success', 'Viaje creado exitosamente');
     }
     /**
@@ -113,5 +113,36 @@ class viajeController extends Controller
         $viaje->delete();
 
         return redirect()->route('viajes.index')->with('success', 'Viaje eliminado exitosamente');
+    }
+
+    public function actualizarEstado(Request $request, $id)
+    {
+        $request->validate([
+            'estado' => 'required|string|in:Viaje Registrado,Viaje en camino,Viaje Finalizado',
+        ]);
+
+        $viaje = Viaje::findOrFail($id);
+        $viaje->estado = $request->estado;
+        $viaje->save();
+
+        // Actualizar el estado de las encomiendas asociadas
+        $nuevoEstadoEncomienda = null;
+        switch ($viaje->estado) {
+            case 'Viaje Registrado':
+                $nuevoEstadoEncomienda = 'Pedido Registrado';
+                break;
+            case 'Viaje en camino':
+                $nuevoEstadoEncomienda = 'Pedido en camino';
+                break;
+            case 'Viaje Finalizado':
+                $nuevoEstadoEncomienda = 'Pedido para recojo';
+                break;
+        }
+
+        if ($nuevoEstadoEncomienda) {
+            $viaje->encomiendas()->update(['estado_envio' => $nuevoEstadoEncomienda]);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

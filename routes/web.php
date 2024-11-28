@@ -72,7 +72,7 @@ Route::resources([
     'vehiculos'=>vehiculoController::class,
     'viajes'=> viajeController::class,
     'ventas_pasajes'=> ventaPasajeController::class
-    
+
 ]);
 Route::get('/clientes/{id}', [ClienteController::class, 'getClientData']);
 
@@ -95,4 +95,10 @@ Route::post('/crear-cliente1', [clienteController::class, 'store1'])->name('clie
 Route::post('/crear-cliente2', [clienteController::class, 'store2'])->name('clientes.store2');
 
 Route::resource('encomiendas', encomiendaController::class);
+
+Route::post('/viajes/{id}/actualizar-estado', [ViajeController::class, 'actualizarEstado'])->name('viajes.actualizarEstado');
+
+// Ruta para generar la boleta de pasaje en PDF
+Route::get('ventas_pasajes/{id}/boleta', [VentaPasajeController::class, 'boleta'])->name('ventas_pasajes.boleta');
+
 

@@ -58,10 +58,10 @@ class ventaPasajeController extends Controller
             'costo' => 'required|numeric|min:0',
             'estado' => 'required|string|in:transferencia,credito,efectivo,yape_plin',
         ]);
-    
+
         // Determinar el valor de id_empresa
         $id_empresa = $request->tipo_cliente === 'natural' ? null : $request->id_empresa;
-    
+
         // Crear el registro
         $venta = new VentaPasaje();
         $venta->id_viaje = $validated['viaje_id'];
@@ -71,7 +71,7 @@ class ventaPasajeController extends Controller
         $venta->estado = $validated['estado'];
         $venta->id_empresa = $id_empresa; // Null si tipo_cliente es natural
         $venta->save();
-    
+
         // Responder al cliente
         return redirect()->route('ventas_pasajes.index')->with('success', 'Venta de pasaje creada exitosamente.');
 
@@ -126,10 +126,10 @@ class ventaPasajeController extends Controller
         try {
             // Validación de entrada
             $request->validate(['dni' => 'required|string']);
-    
+
             // Buscar persona por DNI
             $persona = Persona::where('numero_documento', $request->dni)->first();
-            
+
             // Si no se encuentra la persona
             if (!$persona) {
                 return response()->json([
@@ -137,7 +137,7 @@ class ventaPasajeController extends Controller
                     'message' => 'Persona no encontrada',
                 ], 404);
             }
-    
+
             // Si la persona no tiene cliente asociado
             if (!$persona->cliente) {
                 return response()->json([
@@ -145,10 +145,10 @@ class ventaPasajeController extends Controller
                     'message' => 'Cliente no asociado a esta persona',
                 ], 404);
             }
-    
+
             // Verificar relación con documento
             $tipoDocumento = $persona->documento->tipo_documento ?? 'Desconocido';
-    
+
             // Preparar datos para retornar
             $clienteData = [
                 'id' => $persona->id,
@@ -157,12 +157,12 @@ class ventaPasajeController extends Controller
                 'numero_documento' => $persona->numero_documento,
                 'direccion' => $persona->direccion,
             ];
-        
+
             return response()->json([
                 'success' => true,
                 'data' => $clienteData,
             ]);
-        } catch (\Exception $e) {    
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error interno del servidor',
@@ -170,8 +170,29 @@ class ventaPasajeController extends Controller
         }
     }
 
-    
+    public function boleta($id)
+    {
+        // Recuperamos la venta de pasaje con todas las relaciones necesarias
+        $venta = VentaPasaje::with(['cliente.persona', 'viaje.vehiculo', 'empresa.persona'])->findOrFail($id);
 
+        // Datos del cliente
+        $cliente = $venta->cliente->persona;
+        $tipo_cliente = ($cliente->tipo_persona == 'juridico') ? $venta->empresa->persona->razon_social : $cliente->razon_social;
+        $documento_cliente = $cliente->numero_documento;
 
-    
+        // Datos del viaje
+        $viaje = $venta->viaje;
+        $vehiculo = $viaje->vehiculo;
+
+        // Fecha de la venta
+        $fecha_venta = $venta->fecha_venta;
+        $costo = $venta->costo;
+
+        // Generación de la boleta en PDF
+        $pdf = \PDF::loadView('boletas.pasaje', compact('venta', 'tipo_cliente', 'documento_cliente', 'viaje', 'vehiculo', 'fecha_venta', 'costo'));
+
+        // Retorna el PDF generado para su descarga
+        return $pdf->download('boleta_venta_pasaje_' . $venta->id . '.pdf');
+    }
+
 }

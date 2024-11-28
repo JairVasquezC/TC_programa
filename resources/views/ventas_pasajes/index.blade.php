@@ -44,6 +44,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Vista de ventas de pasajes -->
                     @foreach($ventasPasajes as $venta)
                     <tr>
                         <td>{{ $venta->viaje->fecha }} - {{ $venta->viaje->hora }}</td>
@@ -65,6 +66,9 @@
                                     <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                 </form>
                                 @endcan
+
+                                <!-- Botón para generar la boleta -->
+                                <a href="{{ route('ventas_pasajes.boleta', $venta) }}" class="btn btn-info btn-sm">Generar Boleta</a>
                             </div>
                         </td>
                     </tr>
