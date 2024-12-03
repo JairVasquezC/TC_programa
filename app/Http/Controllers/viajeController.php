@@ -66,7 +66,7 @@ class viajeController extends Controller
         ]);
 
         // Asignar automáticamente el estado "Viaje Registrado"
-        $validated['estado'] = 'Viaje Registrado';
+        $validated['estado'] = 'Registrado';
 
         // Crear el viaje
         Viaje::create($validated);
@@ -118,7 +118,7 @@ class viajeController extends Controller
     public function actualizarEstado(Request $request, $id)
     {
         $request->validate([
-            'estado' => 'required|string|in:Viaje Registrado,Viaje en camino,Viaje Finalizado',
+            'estado' => 'required|string|in:Registrado,En Camino,Finalizado',
         ]);
 
         $viaje = Viaje::findOrFail($id);
@@ -128,14 +128,14 @@ class viajeController extends Controller
         // Actualizar el estado de las encomiendas asociadas
         $nuevoEstadoEncomienda = null;
         switch ($viaje->estado) {
-            case 'Viaje Registrado':
-                $nuevoEstadoEncomienda = 'Pedido Registrado';
+            case 'Registrado':
+                $nuevoEstadoEncomienda = 'Registrado';
                 break;
-            case 'Viaje en camino':
-                $nuevoEstadoEncomienda = 'Pedido en camino';
+            case 'En Camino':
+                $nuevoEstadoEncomienda = 'En Camino';
                 break;
-            case 'Viaje Finalizado':
-                $nuevoEstadoEncomienda = 'Pedido para recojo';
+            case 'Finalizado':
+                $nuevoEstadoEncomienda = 'Para Recojo';
                 break;
         }
 

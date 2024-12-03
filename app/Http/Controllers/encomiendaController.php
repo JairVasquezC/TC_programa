@@ -63,7 +63,7 @@ class encomiendaController extends Controller
         $encomienda->id_destinatario = $validated['id_destinatario'];
         $encomienda->costo_total = $validated['costo_total'];
         $encomienda->fecha_registro = Carbon::now();
-        $encomienda->estado_envio = 'Pedido Registrado';
+        $encomienda->estado_envio = 'Registrado';
         $encomienda->id_empresa = $id_empresa;// Null si tipo_cliente es natural
         $encomienda->save();
 

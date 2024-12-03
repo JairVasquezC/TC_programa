@@ -56,9 +56,9 @@
                         <!-- <td>{{ $viaje->estado ?? 'No definido' }}</td> -->
                         <td>
                             <select class="form-select form-select-sm actualizar-estado" data-id="{{ $viaje->id }}">
-                                <option value="Viaje Registrado" {{ $viaje->estado == 'Viaje Registrado' ? 'selected' : '' }}>Viaje Registrado</option>
-                                <option value="Viaje en camino" {{ $viaje->estado == 'Viaje en camino' ? 'selected' : '' }}>Viaje en camino</option>
-                                <option value="Viaje Finalizado" {{ $viaje->estado == 'Viaje Finalizado' ? 'selected' : '' }}>Viaje Finalizado</option>
+                                <option value="Registrado" {{ $viaje->estado == 'Registrado' ? 'selected' : '' }}>Registrado</option>
+                                <option value="En Camino" {{ $viaje->estado == 'En Camino' ? 'selected' : '' }}>En Camino</option>
+                                <option value="Finalizado" {{ $viaje->estado == 'Finalizado' ? 'selected' : '' }}>Finalizado</option>
                             </select>
                         </td>
                         <td>

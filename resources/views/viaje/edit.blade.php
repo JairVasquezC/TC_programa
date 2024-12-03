@@ -76,9 +76,9 @@
                         <label for="estado" class="form-label">Estado:</label>
                         <select name="estado" id="estado" class="form-control">
                             <option value="">Seleccionar estado</option>
-                            <option value="Viaje Registrado" {{ old('estado', $viaje->estado) == 'Viaje Registrado' ? 'selected' : '' }}>Viaje Registrado</option>
-                            <option value="Viaje en camino" {{ old('estado', $viaje->estado) == 'Viaje en camino' ? 'selected' : '' }}>Viaje en camino</option>
-                            <option value="Viaje Finalizado" {{ old('estado', $viaje->estado) == 'Viaje Finalizado' ? 'selected' : '' }}>Viaje Finalizado</option>
+                            <option value="Registrado" {{ old('estado', $viaje->estado) == 'Registrado' ? 'selected' : '' }}>Registrado</option>
+                            <option value="En Camino" {{ old('estado', $viaje->estado) == 'En Camino' ? 'selected' : '' }}>En Camino</option>
+                            <option value="Finalizado" {{ old('estado', $viaje->estado) == 'Finalizado' ? 'selected' : '' }}>Finalizado</option>
                         </select>
                     </div>
                 </div>

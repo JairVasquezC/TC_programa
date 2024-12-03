@@ -55,7 +55,7 @@
                         <td>{{ $venta->empresa->persona->razon_social ?? 'No asignada' }}</td>
                         <td>
                             <div class="d-flex justify-content-around">
-                                <!-- Botón de opciones (Eliminar) -->
+                                <!-- Botón de opciones (Boleta) -->
                                 <div>
                                     <button title="Opciones" class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="dropdown" aria-expanded="false">
                                         <svg class="svg-inline--fa fa-ellipsis-vertical" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="ellipsis-vertical" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512">
@@ -63,14 +63,7 @@
                                         </svg>
                                     </button>
                                     <ul class="dropdown-menu text-bg-light" style="font-size: small;">
-                                        <!-- Opción para eliminar la venta de pasaje -->
-                                        @can('eliminar-venta_pasaje')
-                                        <li>
-                                            <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#confirmModal-{{ $venta->id }}">
-                                                Eliminar
-                                            </button>
-                                        </li>
-                                        @endcan
+                                        <li><a class="dropdown-item" href="{{ route('ventas_pasajes.boleta', $venta) }}">Generar Boleta</a></li>
                                     </ul>
                                 </div>
                         
@@ -79,13 +72,14 @@
                                     <div class="vr"></div>
                                 </div>
                         
-                                <!-- Botón para generar la boleta -->
+                                <!-- Botón para eliminar viaje -->
                                 <div>
-                                    <a href="{{ route('ventas_pasajes.boleta', $venta) }}" class="btn btn-datatable btn-icon btn-transparent-dark" title="Generar Boleta">
-                                        <svg class="svg-inline--fa fa-receipt" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="receipt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                                            <path fill="currentColor" d="M368 0H16C7.16 0 0 7.16 0 16v480c0 12.94 13.82 20.45 24.96 14.53L64 480l39.04 30.53C112.18 500.45 128 492.94 128 480v-16h128v16c0 12.94 13.82 20.45 24.96 14.53L320 480l39.04 30.53C370.18 500.45 384 492.94 384 480V16c0-8.84-7.16-16-16-16zM352 448l-32-24-32 24V64h64v384zM128 64v384l-32-24-32 24V64h64zm64 0v384h-64V64h64zm96 384V64h64v384h-64z"></path>
+                                    <button title="Eliminar" data-bs-toggle="modal" data-bs-target="#confirmModal-{{ $venta->id }}" 
+                                        class="btn btn-datatable btn-icon btn-transparent-dark">
+                                        <svg class="svg-inline--fa fa-trash-can" aria-hidden="true" focusable="false" data-prefix="far" data-icon="trash-can" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                            <path fill="currentColor" d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z"></path>
                                         </svg>
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         

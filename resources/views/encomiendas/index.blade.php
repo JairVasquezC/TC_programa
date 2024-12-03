@@ -41,6 +41,7 @@
                     <tr>
                         <th>Remitente</th>
                         <th>Destinatario</th>
+                        <th>Fecha de viaje</th>
                         <th>Costo Total</th>
                         <th>Estado</th>
                         <th>Empresa</th>
@@ -52,6 +53,7 @@
                     <tr>
                         <td>{{ $encomienda->remitente->persona->razon_social ?? 'No asignado' }}</td>
                         <td>{{ $encomienda->destinatario->persona->razon_social ?? 'No asignado' }}</td>
+                        <td>{{ $encomienda->viaje->fecha }} - {{ $encomienda->viaje->hora }}</td>
                         <td>{{ $encomienda->costo_total }}</td>
                         <td>{{ $encomienda->estado_envio ?? 'No definido' }}</td>
                         <td>{{ $encomienda->empresa->persona->razon_social ?? 'No asignada' }}</td>
