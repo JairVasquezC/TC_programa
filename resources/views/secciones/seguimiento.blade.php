@@ -29,12 +29,12 @@
         </button>
     </div>
 
+<div class="container py-5">
     <!-- Título -->
-    <div class="text-center">
-        <h2 class="mt-8">Rastreo de Carga</h2>
-        <p >Ingresa tu número de rastreo y DNI para conocer el estado de tu envío.</p>
-    </div>
-
+    <h2 class="text-center mb-4">Rastreo de Carga</h2>
+    <p class="text-center mb-5">
+        Ingresa tu número de rastreo y DNI para conocer el estado de tu envío.
+    </p>
     <!-- Formulario -->
     <form id="rastreoForm" class="rounded p-4 mb-5">
         <div class="row g-3">

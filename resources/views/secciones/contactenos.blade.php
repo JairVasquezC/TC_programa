@@ -30,14 +30,15 @@
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
-      </div>
+    </div>
 
     <!-- Título -->
 
-    <div class="text-center">
-        <h2 class="mt-4">Contáctanos</h2>
-        <p >Estamos aquí para ayudarte con cualquier duda o consulta.</p>
-    </div>
+<div class="container py-5">
+    <h2 class="text-center mb-4">Contáctanos</h2>
+    <p class="text-center mb-5">
+        Estamos aquí para ayudarte con cualquier duda o consulta.
+    </p>
     <!-- Preguntas Frecuentes -->
     <section class="mb-1 text-align-center" >
         <h3  style="text-align: center">Preguntas Frecuentes</h3>
