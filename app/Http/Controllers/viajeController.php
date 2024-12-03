@@ -145,4 +145,29 @@ class viajeController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function boleta($id)
+    {
+        // Recuperamos la venta de pasaje con todas las relaciones necesarias
+        $venta = VentaPasaje::with(['cliente.persona', 'viaje.vehiculo', 'empresa.persona'])->findOrFail($id);
+
+        // Datos del cliente
+        $cliente = $venta->cliente->persona;
+        $tipo_cliente = ($cliente->tipo_persona == 'juridico') ? $venta->empresa->persona->razon_social : $cliente->razon_social;
+        $documento_cliente = $cliente->numero_documento;
+
+        // Datos del viaje
+        $viaje = $venta->viaje;
+        $vehiculo = $viaje->vehiculo;
+
+        // Fecha de la venta
+        $fecha_venta = $venta->fecha_venta;
+        $costo = $venta->costo;
+
+        // Generación de la boleta en PDF
+        $pdf = \PDF::loadView('boletas.pasaje', compact('venta', 'tipo_cliente', 'documento_cliente', 'viaje', 'vehiculo', 'fecha_venta', 'costo'));
+
+        // Retorna el PDF generado para su descarga
+        return $pdf->download('boleta_venta_pasaje_' . $venta->id . '.pdf');
+    }
 }

@@ -100,4 +100,7 @@ Route::post('/viajes/{id}/actualizar-estado', [ViajeController::class, 'actualiz
 // Ruta para generar la boleta de pasaje en PDF
 Route::get('ventas_pasajes/{id}/boleta', [VentaPasajeController::class, 'boleta'])->name('ventas_pasajes.boleta');
 
+// Ruta para generar la boleta de pasaje en PDF
+Route::get('emcomienda/{id}/boleta', [encomiendaController::class, 'boletaEncomienda'])->name('encomienda.boleta');
+
 

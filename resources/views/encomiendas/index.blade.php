@@ -59,6 +59,16 @@
                         <td>{{ $encomienda->empresa->persona->razon_social ?? 'No asignada' }}</td>
                         <td>
                             <div class="d-flex justify-content-around">
+                                <div>
+                                    <button title="Opciones" class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg class="svg-inline--fa fa-ellipsis-vertical" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="ellipsis-vertical" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512">
+                                            <path fill="currentColor" d="M56 472a56 56 0 1 1 0-112 56 56 0 1 1 0 112zm0-160a56 56 0 1 1 0-112 56 56 0 1 1 0 112zM0 96a56 56 0 1 1 112 0A56 56 0 1 1 0 96z"></path>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu text-bg-light" style="font-size: small;">
+                                        <li><a class="dropdown-item" href="{{ route('encomienda.boleta', $encomienda) }}">Generar Boleta</a></li>
+                                    </ul>
+                                </div>
                                 @can('editar-encomienda')
                                 <a href="{{ route('encomiendas.edit', $encomienda) }}" class="btn btn-primary btn-sm">Editar</a>
                                 @endcan
