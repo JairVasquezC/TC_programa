@@ -50,7 +50,7 @@
                     @foreach ($viajes as $viaje)
                     <tr>
                         <td>{{ $viaje->fecha }}</td>
-                        <td>{{ $viaje->id }}</td>
+                        <td>{{ $viaje->hora }}</td>
                         <td>{{ $viaje->chofer->name ?? 'Sin chofer' }}</td>
                         <td>{{ $viaje->vehiculo->placa ?? 'Sin vehículo' }}</td>
                         <td>{{ $viaje->estado }}</td>
