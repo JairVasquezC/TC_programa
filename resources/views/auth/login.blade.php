@@ -23,8 +23,8 @@
         /* Contenedor de las dos columnas */
         .login-container {
             display: flex;
-            width: 80%;
-            height: 80%;
+            width: 90%;
+            height: 90%;
 
             justify-content: center; /* Centra el contenedor de login horizontalmente */
             align-items: center; /* Centra el contenedor de login verticalmente */
@@ -34,9 +34,10 @@
         /* Columna izquierda (Celeste) */
         .login-left {
             background-color: #ffffff; /* Celeste */
-            width: 28%;
+            width: 50%;
+            padding: 10px;
             display: flex;
-            justify-content: center;
+            justify-content: right;
             align-items: center;
         }
 
@@ -49,9 +50,10 @@
         /* Columna derecha (Formulario de login) */
         .login-right {
             background-color: #ffffff;
-            width: 28%;
+            width: 50%;
+            padding: 10px;
             display: flex;
-            justify-content: center;
+            justify-content: left;
             align-items: center;
            
         }
@@ -66,7 +68,7 @@
         .card-header {
             background-color: #ffffff;
             text-align: center;
-            padding: 38px;
+            padding: 4px;
         }
 
         .card-header img {
@@ -135,20 +137,21 @@
                     <form action="/login" method="post">
                         @csrf
                         <div class="form-floating mb-4">
-                            <input autofocus autocomplete="off" value="luz@gmail.com" class="form-control" name="email" id="inputEmail" type="email" placeholder="name@example.com" />
+                            <input autofocus autocomplete="off"class="form-control" name="email" id="inputEmail" type="email" placeholder="name@example.com" />
                             <label for="inputEmail">Correo electrónico</label>
                         </div>
                         <div class="form-floating mb-4">
-                            <input class="form-control" name="password" value="12345678" id="inputPassword" type="password" placeholder="Password" />
+                            <input class="form-control" name="password" id="inputPassword" type="password" placeholder="Password" />
                             <label for="inputPassword">Contraseña</label>
                         </div>
-                        <div class="d-flex align-items-center justify-content-center mt-4 mb-0 text-center">
-                            <button class="btn btn-secondary" type="submit" style="background: #E01A1A">Iniciar sesión</button>
+                        <div class="d-flex justify-content-between mt-4 mb-0">
+                            <button class="btn btn-secondary" type="submit" style="background: #E01A1A;">Iniciar sesión</button>
+                            <a href="/" class="btn btn-secondary" style="background: #6c757d;">Volver a inicio</a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
+<!--  value="luz@gmail.com"   value="12345678"  -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwL

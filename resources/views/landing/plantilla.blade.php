@@ -21,7 +21,7 @@
     <div class="main" id="top">
       <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: rgba(255, 255, 255, 0.9); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
         <div class="container">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="{{ url('/') }}">
             <img src="assets/img/oficial.png" height="50" alt="logo" />
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
