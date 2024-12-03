@@ -55,20 +55,61 @@
                         <td>{{ $venta->empresa->persona->razon_social ?? 'No asignada' }}</td>
                         <td>
                             <div class="d-flex justify-content-around">
-                                {{-- @can('editar-venta_pasaje')
-                                <a href="{{ route('ventas_pasajes.edit', $venta) }}" class="btn btn-primary btn-sm">Editar</a>
-                                @endcan --}}
-
-                                @can('eliminar-venta_pasaje')
-                                <form action="{{ route('ventas_pasajes.destroy', $venta) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta venta?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                </form>
-                                @endcan
-
+                                <!-- Botón de opciones (Eliminar) -->
+                                <div>
+                                    <button title="Opciones" class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg class="svg-inline--fa fa-ellipsis-vertical" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="ellipsis-vertical" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512">
+                                            <path fill="currentColor" d="M56 472a56 56 0 1 1 0-112 56 56 0 1 1 0 112zm0-160a56 56 0 1 1 0-112 56 56 0 1 1 0 112zM0 96a56 56 0 1 1 112 0A56 56 0 1 1 0 96z"></path>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu text-bg-light" style="font-size: small;">
+                                        <!-- Opción para eliminar la venta de pasaje -->
+                                        @can('eliminar-venta_pasaje')
+                                        <li>
+                                            <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#confirmModal-{{ $venta->id }}">
+                                                Eliminar
+                                            </button>
+                                        </li>
+                                        @endcan
+                                    </ul>
+                                </div>
+                        
+                                <!-- Separador visual -->
+                                <div>
+                                    <div class="vr"></div>
+                                </div>
+                        
                                 <!-- Botón para generar la boleta -->
-                                <a href="{{ route('ventas_pasajes.boleta', $venta) }}" class="btn btn-primary btn-sm">Generar Boleta</a>
+                                <div>
+                                    <a href="{{ route('ventas_pasajes.boleta', $venta) }}" class="btn btn-datatable btn-icon btn-transparent-dark" title="Generar Boleta">
+                                        <svg class="svg-inline--fa fa-receipt" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="receipt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                                            <path fill="currentColor" d="M368 0H16C7.16 0 0 7.16 0 16v480c0 12.94 13.82 20.45 24.96 14.53L64 480l39.04 30.53C112.18 500.45 128 492.94 128 480v-16h128v16c0 12.94 13.82 20.45 24.96 14.53L320 480l39.04 30.53C370.18 500.45 384 492.94 384 480V16c0-8.84-7.16-16-16-16zM352 448l-32-24-32 24V64h64v384zM128 64v384l-32-24-32 24V64h64zm64 0v384h-64V64h64zm96 384V64h64v384h-64z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        
+                            <!-- Modal de confirmación para eliminar venta -->
+                            <div class="modal fade" id="confirmModal-{{ $venta->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Mensaje de confirmación</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ¿Estás seguro de que deseas eliminar esta venta?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            <form action="{{ route('ventas_pasajes.destroy', $venta) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">Confirmar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </td>
                     </tr>

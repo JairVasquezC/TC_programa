@@ -24,7 +24,7 @@
     @can('crear-cliente')
     <div class="mb-4">
         <a href="{{route('clientes.create')}}">
-            <button type="button" class="btn btn-warning">Nuevo registro</button>
+            <button type="button" class="btn btn-primary">Nuevo registro</button>
         </a>
     </div>
     @endcan
@@ -42,7 +42,6 @@
                         <th>Dirección</th>
                         <th>Documento</th>
                         <th>Tipo de persona</th>
-                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -61,13 +60,6 @@
                         </td>
                         <td>
                             {{$item->persona->tipo_persona}}
-                        </td>
-                        <td>
-                            @if ($item->persona->estado == 1)
-                            <span class="badge rounded-pill text-bg-success">activo</span>
-                            @else
-                            <span class="badge rounded-pill text-bg-danger">eliminado</span>
-                            @endif
                         </td>
                         <td>
                             <div class="d-flex justify-content-around">

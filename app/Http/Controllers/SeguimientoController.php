@@ -10,10 +10,10 @@ class SeguimientoController extends Controller
     public function index()
     {
         $estadosEnvio = [
-            ['id' => 1, 'nombre' => 'Pedido Registrado', 'imagen' => 'assets/img/p_registrado.png'],
-            ['id' => 2, 'nombre' => 'Pedido en Camino', 'imagen' => 'assets/img/p_camino.png'],
-            ['id' => 3, 'nombre' => 'Pedido para Recojo', 'imagen' => 'assets/img/p_recojo.png'],
-            ['id' => 4, 'nombre' => 'Pedido Entregado', 'imagen' => 'assets/img/p_entregado.png'],
+            ['id' => 1, 'nombre' => 'Registrado', 'imagen' => 'assets/img/p_registrado.png'],
+            ['id' => 2, 'nombre' => 'En Camino', 'imagen' => 'assets/img/p_camino.png'],
+            ['id' => 3, 'nombre' => 'Para Recojo', 'imagen' => 'assets/img/p_recojo.png'],
+            ['id' => 4, 'nombre' => 'Entregado', 'imagen' => 'assets/img/p_entregado.png'],
         ];
 
         return view('secciones/seguimiento', compact('estadosEnvio'));

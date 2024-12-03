@@ -17,9 +17,6 @@ class DocumentoSeeder extends Seeder
                 'tipo_documento' => 'DNI',
             ],
             [
-                'tipo_documento' => 'Pasaporte',
-            ],
-            [
                 'tipo_documento' => 'RUC',
             ],
             [
