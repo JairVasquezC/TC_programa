@@ -58,7 +58,7 @@ class PaquetesEncomiendasTableSeeder extends Seeder
             $destinatario = $clientesPersonas->random();
 
             // Determinar si se asigna un viaje
-            $viaje = rand(0, 1) ? $viajes->random() : null;
+            $viaje = $viajes->random();
 
             // Seleccionar una empresa aleatoria (clientes empresas) o null
             $empresa = rand(0, 1) ? $clientesEmpresas->random() : null;
@@ -84,7 +84,7 @@ class PaquetesEncomiendasTableSeeder extends Seeder
                 'fecha_registro' => Carbon::now()->subDays(rand(0, 30)),
                 'id_remitente' => $remitente->id,
                 'id_destinatario' => $destinatario->id,
-                'id_viaje' => $viaje->id,
+                'id_viaje' =>$viaje->id,
                 'id_empresa' => $empresa ? $empresa->id : null, // Asignar empresa si existe
             ]);
 
