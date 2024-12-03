@@ -57,9 +57,9 @@
 
     <!-- Resultado -->
     <div id="resultadoPedido" class="d-none bg-white shadow rounded p-4">
-        <h4 class="text-danger fw-bold">Estado del Envío</h4>
-        <p id="descripcionPedido" class="text-muted"></p>
-        <p id="fechaRegistro" class="text-muted"></p> <!-- Fecha de registro -->
+        <h4 class="fw-bold"  style="color: #A61818;">Estado del Envío</h4>
+        <p id="descripcionPedido"></p>
+        <p id="fechaRegistro"></p> <!-- Fecha de registro -->
     
         <div class="position-relative d-flex justify-content-between align-items-center mt-4">
             <!-- Línea de progreso -->
@@ -68,13 +68,13 @@
             <!-- Estados -->
             @foreach ($estadosEnvio as $estado)
             <div class="text-center flex-grow-1">
-                <div class="rounded-circle border border-4 mb-2 mx-auto" 
+                <div class="rounded-circle border border-4 mb-2 mx-auto d-flex justify-content-center align-items-center" 
                     id="estado-{{ $estado['id'] }}" 
                     style="width: 80px; height: 80px; background-color: #ddd;">
                     <img src="{{ asset($estado['imagen']) }}" alt="{{ $estado['nombre'] }}" 
                         class="w-50 h-50">
                 </div>
-                <p class="text-muted">{{ $estado['nombre'] }}</p>
+                <p>{{ $estado['nombre'] }}</p>
             </div>
             @endforeach
         </div>
