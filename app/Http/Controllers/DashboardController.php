@@ -101,5 +101,5 @@ class DashboardController extends Controller
                 'viajesPorVehiculo' => $viajesPorVehiculo
             ]
         ]);
-}
+    }
 }
