@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use App\Models\VentaPasaje;
 use App\Models\Encomienda;
 use App\Models\Viaje;
 use Illuminate\Http\Request;
+use App\Models\Vehiculo;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -45,15 +48,58 @@ class DashboardController extends Controller
         return $encomienda;
     });
 
+    // Obtener clientes no jurídicos (personas)
+    $clientesNoJuridicos = Cliente::whereHas('persona', function ($query) {
+        $query->where('documento_id', '!=', 2);  // Documentos diferentes a 2, asumiendo que 2 es para empresas
+    })->count();
+
+    // Obtener clientes jurídicos (empresas)
+    $clientesJuridicos = Cliente::whereHas('persona', function ($query) {
+        $query->where('documento_id', '=', 2);  // Documento igual a 2, para empresas
+    })->count();
+
+    // Obtener cantidad de vehículos
+    $vehiculos = Vehiculo::count();
+
+    // Obtener cantidad de usuarios
+    $usuarios = User::count();
+
     // Datos de estados de los viajes
     $viajes = Viaje::selectRaw('estado, COUNT(*) as total')
         ->groupBy('estado')
         ->get();
 
-    return response()->json([
-        'ventas' => $ventas,
-        'encomiendas' => $encomiendas,
-        'viajes' => $viajes,
-    ]);
+    $estadoEncomiendas = Encomienda::selectRaw('estado_envio, COUNT(*) as total')
+        ->groupBy('estado_envio')
+        ->orderByRaw("FIELD(estado_envio, 'Registrado', 'En Camino', 'Para Recojo', 'Entregado')")
+        ->get();
+
+
+   // Datos de viajes por vehículo
+    $viajesPorVehiculo = Viaje::selectRaw('id_vehiculo, COUNT(*) as total_viajes')
+        ->groupBy('id_vehiculo')
+        ->with('vehiculo')  // Cargar la relación con Vehiculo
+        ->get()
+        ->map(function ($viaje) {
+            return [
+                'vehiculo' => $viaje->vehiculo->placa ?? 'Vehículo ID ' . $viaje->id_vehiculo, // Mostrar la placa del vehículo
+                'total_viajes' => $viaje->total_viajes
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'ventas' => $ventas,
+                'encomiendas' => $encomiendas,
+                'estadoEncomiendas' => $estadoEncomiendas,
+                'viajes' => $viajes,
+                'clientes_no_juridicos' => $clientesNoJuridicos,
+                'clientes_juridicos' => $clientesJuridicos,
+                'vehiculos' => $vehiculos,
+                'usuarios' => $usuarios,
+                'viajesPorVehiculo' => $viajesPorVehiculo
+            ]
+        ]);
 }
 }

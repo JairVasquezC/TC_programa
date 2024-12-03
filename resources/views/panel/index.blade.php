@@ -32,50 +32,67 @@
         <li class="breadcrumb-item active"></li>
     </ol>
     <div class="row">
-        <!-- Clientes -->
-        <div class="col-xl-3 col-md-6">
+        <!-- Clientes Jurídicos -->
+        <div class="col-xl-3 col-md-3">
             <div class="card bg-primary text-white mb-4">
                 <div class="card-body p-4">
                     <div class="row">
                         <div class="col-8">
-                            <i class="fa-solid fa-people-group"></i><span class="m-1">Clientes</span>
+                            <i class="fa-solid fa-building"></i><span class="m-1">Empresas</span>
                         </div>
                         <div class="col-4">
-                            <?php
-                            use App\Models\Cliente;
-                            $clientes = count(Cliente::all());
-                            ?>
-                            <p class="text-center fw-bold fs-4">{{$clientes}}</p>
+                            <p id="clientesJuridicos" class="text-center fw-bold fs-4">...</p>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{ route('clientes.index') }}">Ver más</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+
+        <!-- Clientes No Jurídicos -->
+        <div class="col-xl-3 col-md-3">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-8">
+                            <i class="fa-solid fa-user"></i><span class="m-1">Clientes</span>
+                        </div>
+                        <div class="col-4">
+                            <p id="clientesNoJuridicos" class="text-center fw-bold fs-4">...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Vehículos -->
+        <div class="col-xl-3 col-md-3">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-8">
+                            <i class="fa-solid fa-car"></i><span class="m-1">Vehículos</span>
+                        </div>
+                        <div class="col-4">
+                            <p id="vehiculos" class="text-center fw-bold fs-4">...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Usuarios -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
+        <div class="col-xl-3 col-md-3">
+            <div class="card bg-success text-white mb-4">
                 <div class="card-body p-4">
                     <div class="row">
                         <div class="col-8">
-                            <i class="fa-solid fa-user"></i><span class="m-1">Usuarios</span>
+                            <i class="fa-solid fa-users"></i><span class="m-1">Usuarios</span>
                         </div>
                         <div class="col-4">
-                            <?php
-                            use App\Models\User;
-                            $users = count(User::all());
-                            ?>
-                            <p class="text-center fw-bold fs-4">{{$users}}</p>
+                            <p id="usuarios" class="text-center fw-bold fs-4">...</p>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="{{ route('users.index') }}">Ver más</a>
-                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
         </div>
@@ -89,8 +106,11 @@
         <div class="col-md-6">
             <canvas id="encomiendasChart" class="p-2"></canvas>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <canvas id="viajesChart" class="p-2"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="viajesPorVehiculoChart" class="p-2"></canvas>
         </div>
     </div>
 </div>
@@ -107,6 +127,13 @@
         fetch('/api/dashboard/datos') // Ruta que te devolverá los datos en formato JSON
             .then(response => response.json())
             .then(data => {
+                // Actualizar los datos en las tarjetas
+                document.getElementById('clientesJuridicos').textContent = data.data.clientes_juridicos;
+                document.getElementById('clientesNoJuridicos').textContent = data.data.clientes_no_juridicos;
+                document.getElementById('vehiculos').textContent = data.data.vehiculos;
+                document.getElementById('usuarios').textContent = data.data.usuarios;
+
+                // Actualizar los gráficos
                 actualizarGraficos(data);
             });
     }
@@ -117,10 +144,10 @@
         new Chart(document.getElementById('ventasChart'), {
             type: 'line',
             data: {
-                labels: data.ventas.map(venta => venta.dia_semana),  // Usar los días de la semana
+                labels: data.data.ventas.map(venta => venta.dia_semana),  // Usar los días de la semana
                 datasets: [{
                     label: 'Total Ventas',
-                    data: data.ventas.map(venta => venta.total_ventas),
+                    data: data.data.ventas.map(venta => venta.total_ventas),
                     borderColor: '#007bff',
                     fill: false,
                 }]
@@ -131,29 +158,81 @@
         new Chart(document.getElementById('encomiendasChart'), {
             type: 'bar',
             data: {
-                labels: data.encomiendas.map(encomienda => encomienda.dia_semana),  // Usar los días de la semana
+                labels: data.data.encomiendas.map(encomienda => encomienda.dia_semana),  // Usar los días de la semana
                 datasets: [{
                     label: 'Costo Total Encomiendas',
-                    data: data.encomiendas.map(encomienda => encomienda.total_costo_encomiendas),
+                    data: data.data.encomiendas.map(encomienda => encomienda.total_costo_encomiendas),
                     backgroundColor: '#28a745',
                 }]
             }
         });
 
-        // Gráfico de viajes
-        new Chart(document.getElementById('viajesChart'), {
-            type: 'pie',
+        // Gráfico de estados de envío de encomiendas
+        new Chart(document.getElementById('viajesChart'), {  // Cambia el ID si lo deseas
+            type: 'bar',  // Cambia de 'pie' a 'bar'
             data: {
-                labels: data.viajes.map(viaje => viaje.estado),
+                labels: data.data.estadoEncomiendas.map(encomienda => encomienda.estado_envio), // Muestra los estados de envío en el eje X
                 datasets: [{
-                    label: 'Estados de Viaje',
-                    data: data.viajes.map(viaje => viaje.total),
-                    backgroundColor: ['#ffc107', '#28a745', '#dc3545'],
+                    label: 'Estados de Envío de Encomiendas',
+                    data: data.data.estadoEncomiendas.map(encomienda => encomienda.total), // Cantidad de encomiendas por estado
+                    backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d'], // Colores de las barras
+                    borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
-                aspectRatio: 1,  // Ajusta la relación de aspecto
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Estado de Envío' // Etiqueta del eje X
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Número de Encomiendas' // Etiqueta del eje Y
+                        },
+                        ticks: {
+                            beginAtZero: true // Comenzar desde cero
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Ocultar la leyenda si es innecesaria
+                    }
+                }
+            }
+        });
+
+        // Gráfico de viajes por vehículo
+        new Chart(document.getElementById('viajesPorVehiculoChart'), {
+            type: 'bar',
+            data: {
+                labels: data.data.viajesPorVehiculo.map(viaje => viaje.vehiculo), // Vehículos
+                datasets: [{
+                    label: 'Viajes por Vehículo',
+                    data: data.data.viajesPorVehiculo.map(viaje => viaje.total_viajes), // Total de viajes
+                    backgroundColor: '#007bff',
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Vehículo'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Número de Viajes'
+                        }
+                    }
+                }
             }
         });
     }
