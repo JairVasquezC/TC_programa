@@ -95,12 +95,9 @@ Route::post('/crear-cliente2', [clienteController::class, 'store2'])->name('clie
 
 Route::resource('encomiendas', encomiendaController::class);
 
-Route::post('/viajes/{id}/actualizar-estado', [ViajeController::class, 'actualizarEstado'])->name('viajes.actualizarEstado');
-
 // Ruta para generar la boleta de pasaje en PDF
 Route::get('ventas_pasajes/{id}/boleta', [VentaPasajeController::class, 'boleta'])->name('ventas_pasajes.boleta');
 
 // Ruta para generar la boleta de pasaje en PDF
 Route::get('emcomienda/{id}/boleta', [encomiendaController::class, 'boletaEncomienda'])->name('encomienda.boleta');
-
 

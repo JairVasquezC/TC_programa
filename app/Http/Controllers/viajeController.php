@@ -6,6 +6,7 @@ use App\Models\Viaje;
 use App\Models\User;
 use App\Models\Vehiculo;
 use Illuminate\Http\Request;
+use App\Events\EstadoViajeActualizado;
 
 class viajeController extends Controller
 {
@@ -101,6 +102,11 @@ class viajeController extends Controller
         // Actualizar el viaje
         $viaje->update($validated);
 
+        // Disparar el evento si el estado ha cambiado
+        if ($request->has('estado')) {
+            EstadoViajeActualizado::dispatch($viaje);
+        }
+
         return redirect()->route('viajes.index')->with('success', 'Viaje actualizado exitosamente');
     }
 
@@ -113,37 +119,6 @@ class viajeController extends Controller
         $viaje->delete();
 
         return redirect()->route('viajes.index')->with('success', 'Viaje eliminado exitosamente');
-    }
-
-    public function actualizarEstado(Request $request, $id)
-    {
-        $request->validate([
-            'estado' => 'required|string|in:Registrado,En Camino,Finalizado',
-        ]);
-
-        $viaje = Viaje::findOrFail($id);
-        $viaje->estado = $request->estado;
-        $viaje->save();
-
-        // Actualizar el estado de las encomiendas asociadas
-        $nuevoEstadoEncomienda = null;
-        switch ($viaje->estado) {
-            case 'Registrado':
-                $nuevoEstadoEncomienda = 'Registrado';
-                break;
-            case 'En Camino':
-                $nuevoEstadoEncomienda = 'En Camino';
-                break;
-            case 'Finalizado':
-                $nuevoEstadoEncomienda = 'Para Recojo';
-                break;
-        }
-
-        if ($nuevoEstadoEncomienda) {
-            $viaje->encomiendas()->update(['estado_envio' => $nuevoEstadoEncomienda]);
-        }
-
-        return response()->json(['success' => true]);
     }
 
     public function boleta($id)
